@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111c2b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="application-name" content="SMART SHM">
+<title>SMART SHM | Pendulum Engineering Lab</title>
+<style>
+:root{
+  --ink:#172434;--ink-2:#243448;--muted:#667487;--muted-2:#8995a5;--paper:#f3f5f7;--surface:#fff;--line:#dce2e8;
+  --nav:#111c2b;--nav-2:#1b2a3e;--accent:#e07842;--accent-2:#f3a16f;--blue:#2d7190;--teal:#237d78;
+  --green:#38765e;--red:#b95850;--gold:#b7873b;--soft-surface:#f5f7f8;--soft-accent:#fbefe7;--shadow:0 12px 34px rgba(20,34,50,.07);--radius:15px;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid rgba(224,120,66,.32);outline-offset:2px}
+.app{min-height:100vh;display:grid;grid-template-columns:254px minmax(0,1fr)}
+.sidebar{background:var(--nav);color:#e8edf3;min-height:100vh;padding:24px 16px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
+.brand{display:flex;gap:12px;align-items:center;padding:2px 10px 24px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand-mark{width:38px;height:38px;border:1px solid rgba(255,255,255,.28);border-radius:10px;display:grid;place-items:center;color:#f2a170;font-weight:800;font-size:13px;letter-spacing:-1px}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:.15em;line-height:1.35}.brand-sub{font-size:10px;color:#9eabba;letter-spacing:.1em;margin-top:3px}
+.nav-label{font:10px var(--mono);text-transform:uppercase;letter-spacing:.13em;color:#8795a6;padding:23px 11px 9px}
+.nav{display:grid;gap:5px}
+.nav button{border:0;background:transparent;color:#bac5d1;text-align:left;padding:11px 12px;border-radius:9px;display:flex;gap:12px;align-items:center;font-size:13px;transition:.18s}
+.nav button:hover{background:rgba(255,255,255,.07);color:#fff}.nav button.active{background:#283b51;color:#fff;box-shadow:inset 3px 0 var(--accent)}
+.nav-icon{width:18px;height:18px;display:grid;place-items:center;font-size:15px;color:#e8a071}
+.nav-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.1);padding:17px 10px 2px;color:#95a2b1;font-size:11px}
+.nav-foot strong{display:block;color:#e0e7ee;font-size:12px;font-weight:600;margin-bottom:4px}
+.main{min-width:0;max-width:1600px;width:100%;margin:0 auto;padding:0 34px 50px}
+.topbar{height:67px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.crumb{font-size:12px;color:var(--muted)}.crumb strong{color:var(--ink);font-weight:650}
+.top-actions{display:flex;align-items:center;gap:9px}.status-chip{font:10px var(--mono);letter-spacing:.08em;color:#3c7665;background:#e4f0eb;border:1px solid #c9e1d7;border-radius:30px;padding:6px 10px}
+.icon-btn,.button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:650;transition:.15s}
+.icon-btn:hover,.button:hover{border-color:#aab6c3;background:#f9fafb}.button.primary{background:var(--ink);border-color:var(--ink);color:white}.button.primary:hover{background:#293a4e}.button.accent{background:var(--accent);border-color:var(--accent);color:white}.button.accent:hover{background:#c96b3c}.button.subtle{background:#f5f7f8}.button.danger{color:#a44843;border-color:#e7c8c5;background:#fff8f7}.button.small{font-size:11px;padding:6px 9px}.button:disabled{opacity:.45;cursor:not-allowed}
+.page{display:none;padding-top:27px;animation:appear .22s ease}.page.active{display:block}@keyframes appear{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.eyebrow{font:10px var(--mono);text-transform:uppercase;letter-spacing:.16em;color:var(--accent);font-weight:700}
+h1,h2,h3,h4,p{margin-top:0}h1{font-size:clamp(28px,3.5vw,43px);letter-spacing:-.045em;line-height:1.1;margin:9px 0 12px;font-weight:750}h2{font-size:21px;letter-spacing:-.025em;margin:0 0 5px}h3{font-size:15px;margin:0 0 8px}h4{font-size:12px;margin:0 0 7px}p{color:var(--muted)}
+.lead{max-width:760px;font-size:15px;color:#657386;line-height:1.7;margin:0 0 20px}.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:22px}.page-head .head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:23px;align-items:stretch;background:var(--nav);color:#fff;border-radius:19px;overflow:hidden;box-shadow:var(--shadow);margin:10px 0 22px;min-height:320px}
+.hero-copy{padding:36px 10px 32px 37px;display:flex;flex-direction:column;justify-content:center}.hero h1{font-size:clamp(31px,3.7vw,48px);max-width:610px;color:#fff;margin:12px 0 14px}.hero p{color:#b9c5d1;max-width:550px;font-size:14px;line-height:1.75}.hero-tag{color:#f0a273;font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase}.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.hero-model{background:radial-gradient(circle at 50% 42%,#314961 0,#1b2b3e 45%,#142234 100%);min-height:320px;position:relative;display:flex;flex-direction:column}.hero-model canvas{width:100%;height:278px;display:block;touch-action:none}.model-caption{font:10px var(--mono);letter-spacing:.08em;color:#9dacbd;padding:0 20px 17px;display:flex;justify-content:space-between;gap:8px}
+.grid{display:grid;gap:15px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:0 3px 12px rgba(20,34,50,.025);min-width:0}.card.tight{padding:15px}.card.dark{background:var(--ink-2);border-color:var(--ink-2);color:#fff}.card.dark p{color:#bac5d1}.card-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.card-title h3{margin:0}.muted{color:var(--muted)}.small-note{font-size:11px;line-height:1.55;color:var(--muted)}.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}.metric{font-size:27px;line-height:1.05;letter-spacing:-.04em;font-weight:730;margin:5px 0 4px;font-variant-numeric:tabular-nums}.metric-label{font-size:11px;color:var(--muted)}.metric-foot{font-size:10px;color:var(--muted-2);margin-top:8px}
+.module-card{padding:19px;position:relative;overflow:hidden;min-height:150px;cursor:pointer;transition:.18s}.module-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c1ccd7}.module-card .module-no{font:10px var(--mono);color:var(--accent);letter-spacing:.13em}.module-card h3{font-size:17px;margin:11px 0 6px}.module-card p{font-size:12px;line-height:1.55;margin:0;max-width:300px}.module-card .arrow{position:absolute;right:18px;top:18px;color:#9aa6b3;font-size:19px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:15px}.section-gap{margin-top:19px}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:23px 0 12px}.section-heading h2{font-size:17px}.tag{display:inline-block;border-radius:5px;padding:4px 7px;background:#eef2f5;color:#5a6878;font:9px var(--mono);letter-spacing:.06em;text-transform:uppercase}.tag.orange{background:#fbefe7;color:#a9572f}.tag.green{background:#e6f1eb;color:#36745b}.tag.blue{background:#e8f0f5;color:#336d89}.tag.gold{background:#f6f0e3;color:#98733b}
+.callout{padding:14px 15px;border-left:3px solid var(--accent);background:#faf1eb;border-radius:0 9px 9px 0;font-size:12px;color:#68442f;line-height:1.65}.callout.blue{background:#edf4f7;border-color:var(--blue);color:#365b6d}.callout.green{background:#edf5f0;border-color:var(--green);color:#3e6856}.callout.warning{background:#fbf4e8;border-color:#b7873b;color:#6b5732}
+/* 3D model */
+.model-layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:15px}.model-stage{background:radial-gradient(circle at 50% 35%,#344b63 0,#202f43 56%,#172538 100%);border-radius:15px;overflow:hidden;position:relative;min-height:430px}.model-stage canvas{width:100%;height:430px;display:block;touch-action:none;cursor:grab}.model-stage canvas:active{cursor:grabbing}.stage-label{position:absolute;left:16px;top:15px;color:#d4dde7;font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;pointer-events:none}.stage-help{position:absolute;right:15px;top:15px;color:#aebccd;font:10px var(--mono);pointer-events:none}.model-controls{display:grid;gap:12px}.control{display:grid;gap:7px}.control-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600}.control-head output{font:11px var(--mono);color:var(--accent)}input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}.range-ends{display:flex;justify-content:space-between;color:var(--muted-2);font:9px var(--mono)}.button-row{display:flex;gap:7px;flex-wrap:wrap}.button-row .button{flex:1}.check-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}input[type=checkbox]{accent-color:var(--accent)}
+.model-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.stat-chip{background:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--ink)}.stat-chip span{display:block;color:var(--muted);font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase}.stat-chip strong{display:block;color:var(--ink);font-size:17px;margin-top:3px;font-variant-numeric:tabular-nums}
+/* Forms & tables */
+.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.field{display:grid;gap:5px;min-width:0}.field label{font-size:11px;font-weight:650;color:#445265}.field input,.field select,.field textarea{border:1px solid #d6dde4;border-radius:7px;background:#fff;padding:9px 10px;color:var(--ink);width:100%;min-width:0;font-size:13px}.field textarea{resize:vertical;min-height:82px;line-height:1.55}.field input:focus,.field textarea:focus{border-color:#d78b61;outline:none;box-shadow:0 0 0 3px rgba(224,120,66,.11)}.field small{font-size:10px;color:var(--muted-2)}.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px;margin-top:12px}table{border-collapse:collapse;width:100%;font-size:11px;min-width:520px}th{background:#f1f4f6;color:#687689;text-align:left;font:9px var(--mono);letter-spacing:.07em;text-transform:uppercase;padding:10px 11px;white-space:nowrap}td{padding:9px 11px;border-top:1px solid #edf0f2;color:#334255;white-space:nowrap}tbody tr:hover{background:#fafbfc}.empty-row{text-align:center;color:#8c98a6;padding:18px}.delete-row{border:0;background:transparent;color:#b75a52;font-size:16px;padding:0 5px}
+.result-panel{display:none;margin-top:15px}.result-panel.show{display:block}.result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.result-tile{background:#f6f8f9;border:1px solid #e4e9ed;padding:12px;border-radius:8px}.result-tile .k{font:9px var(--mono);color:#798797;letter-spacing:.08em;text-transform:uppercase}.result-tile .v{font-size:20px;letter-spacing:-.03em;font-weight:720;margin:3px 0}.result-tile .u{font-size:10px;color:var(--muted)}.chart-wrap{height:300px;position:relative;margin-top:15px;background:#fff;border:1px solid #e9edf0;border-radius:9px;padding:7px}.chart-wrap canvas{width:100%;height:100%;display:block}.result-text{font-size:12px;color:#59697a;line-height:1.65;margin-top:12px}.result-text strong{color:var(--ink)}
+/* Industry */
+.industry-card{display:grid;grid-template-columns:42px minmax(0,1fr);gap:13px;padding:18px}.industry-icon{width:40px;height:40px;border-radius:10px;background:#eff2f4;color:var(--blue);display:grid;place-items:center;font-size:19px}.industry-card h3{margin:2px 0 5px}.industry-card p{font-size:12px;line-height:1.65;margin:0 0 9px}.mapping{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mapping div{background:#f5f7f8;border-radius:7px;padding:9px;font-size:10px;line-height:1.5;color:#607083}.mapping strong{display:block;color:#394a5d;font-size:10px;margin-bottom:3px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.step{border:1px solid var(--line);border-radius:9px;background:#fff;padding:13px}.step .num{font:10px var(--mono);color:var(--accent)}.step h4{margin:7px 0 5px}.step p{font-size:10px;line-height:1.5;margin:0}
+.source-list{display:grid;gap:8px}.source-link{display:flex;justify-content:space-between;gap:15px;align-items:center;background:#f7f8f9;border:1px solid #e6eaee;padding:10px 12px;border-radius:8px;text-decoration:none;color:#314256;font-size:11px}.source-link:hover{border-color:#bac7d2;background:#fff}.source-link span:last-child{color:var(--accent)}
+/* Hats */
+.hat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.hat{border:1px solid var(--line);border-radius:10px;background:#fff;padding:14px}.hat-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}.hat-dot{width:23px;height:23px;border-radius:50%;border:1px solid rgba(0,0,0,.1);display:grid;place-items:center;font-size:11px}.hat h3{font-size:12px;margin:0}.hat p{font-size:10px;margin:2px 0 0}.hat textarea{min-height:77px;width:100%;border:1px solid #e0e5e9;border-radius:7px;padding:8px;font-size:11px;resize:vertical}.white{background:#fff;border-color:#cfd5db}.red{background:#c65b53;color:white}.black{background:#28323d;color:white}.yellow{background:#e9c45e}.green{background:#4d9871;color:white}.bluehat{background:#4786b8;color:white}
+.footer{margin-top:33px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;color:#8995a3;font-size:10px}.hidden{display:none!important}
+@media(max-width:1100px){.app{grid-template-columns:220px minmax(0,1fr)}.main{padding:0 23px 40px}.hero{grid-template-columns:1fr minmax(280px,.8fr)}.grid.four{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.app{display:block}.sidebar{position:sticky;top:0;height:auto;min-height:0;padding:10px 12px;display:block}.brand{padding:0 6px 9px;border:0}.brand-mark{width:31px;height:31px}.brand-name{font-size:10px}.brand-sub{font-size:9px}.nav-label,.nav-foot{display:none}.nav{display:flex;overflow-x:auto;padding-top:8px;gap:5px}.nav button{white-space:nowrap;padding:8px 10px;font-size:11px}.nav-icon{width:14px}.main{padding:0 15px 35px}.topbar{height:51px}.hero{grid-template-columns:1fr}.hero-copy{padding:27px 25px 18px}.hero-model{min-height:240px}.hero-model canvas{height:220px}.model-layout{grid-template-columns:1fr}.model-stage canvas{height:370px}.model-stage{min-height:370px}.model-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.model-controls .card:first-child{grid-column:1/-1}.split{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.main{padding-left:11px;padding-right:11px}.page{padding-top:20px}.page-head{display:block}.page-head .head-actions{margin-top:12px}.hero h1{font-size:32px}.grid.two,.grid.three,.grid.four{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.model-stage canvas{height:310px}.model-stage{min-height:310px}.model-controls{grid-template-columns:1fr}.model-controls .card:first-child{grid-column:auto}.model-stats{grid-template-columns:repeat(2,1fr)}.hat-grid{grid-template-columns:1fr}.mapping{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.chart-wrap{height:255px}.status-chip{display:none}.footer{display:block}.footer span{display:block;margin-top:4px}}
+@media print{.sidebar,.topbar,.page-head .head-actions,.button,.hero-actions,.model-controls,.footer{display:none!important}.app{display:block}.main{padding:0}.page{display:block!important;break-inside:avoid}.card,.hero{box-shadow:none;break-inside:avoid}.hero{color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* Experiment-specific orbitable 3D models */
+.experiment-model-grid{display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:14px;align-items:stretch}
+.experiment-stage{height:335px;min-width:0;position:relative;overflow:hidden;border-radius:12px;background:radial-gradient(circle at 50% 38%,#344b63 0,#202f43 58%,#172538 100%)}
+.experiment-stage canvas{width:100%;height:335px;display:block;touch-action:none;cursor:grab}
+.experiment-stage canvas:active{cursor:grabbing}
+.stage-caption,.stage-instruction{position:absolute;top:13px;color:#d5e0e9;font:9px var(--mono);letter-spacing:.1em;pointer-events:none}
+.stage-caption{left:14px}.stage-instruction{right:14px;color:#aebdcc}
+.experiment-controls{display:grid;align-content:start;gap:15px;padding:11px 4px}
+.viz-readout{padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:#f7f9fa}
+.viz-readout span,.viz-temp-pair span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.viz-readout strong{display:block;font-size:23px;letter-spacing:-.04em;margin:3px 0}
+.viz-readout small{display:block;color:var(--muted-2);font-size:10px}
+.viz-temp-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.viz-temp-pair>div{padding:10px;background:#f7f9fa;border:1px solid var(--line);border-radius:8px;min-width:0}
+.viz-temp-pair strong{display:block;font:700 16px var(--mono);margin-top:5px;white-space:nowrap}
+@media(max-width:900px){.experiment-model-grid{grid-template-columns:1fr}.experiment-controls{grid-template-columns:repeat(2,minmax(0,1fr));padding:3px}.experiment-controls .viz-temp-pair,.experiment-controls .viz-readout{grid-column:1/-1}}
+@media(max-width:560px){.experiment-stage,.experiment-stage canvas{height:285px}.experiment-controls{grid-template-columns:1fr}.experiment-controls .viz-temp-pair,.experiment-controls .viz-readout{grid-column:auto}.stage-instruction{top:31px;left:14px;right:auto}}
+
+/* Centralised 3D gallery */
+.model-gallery-intro{display:flex;justify-content:space-between;align-items:center;gap:18px;margin:4px 0 15px;padding:17px 19px;background:#fff;border:1px solid var(--line);border-radius:13px}
+.model-gallery-intro h2{font-size:19px;margin:5px 0 4px}.model-gallery-intro p{font-size:11px;line-height:1.6;margin:0;max-width:720px}.gallery-gesture{min-width:155px;padding:11px 13px;background:#f5f7f8;border-radius:9px}.gallery-gesture span{display:block;font-size:19px;color:var(--accent)}.gallery-gesture strong,.gallery-gesture small{display:block}.gallery-gesture strong{font-size:11px}.gallery-gesture small{color:var(--muted);font-size:9px;margin-top:2px}
+.model-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}.model-tab{border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left;padding:12px 13px;color:var(--ink);display:grid;grid-template-columns:29px 1fr;column-gap:8px;align-items:center;transition:.16s}.model-tab:hover{border-color:#bcc8d4;transform:translateY(-1px)}.model-tab>span{grid-row:1/3;display:grid;place-items:center;width:27px;height:27px;border-radius:7px;background:#f0f3f5;color:#738194;font:10px var(--mono)}.model-tab b{font-size:12px}.model-tab small{font-size:9px;color:var(--muted)}.model-tab.active{background:var(--nav-2);color:#fff;border-color:var(--nav-2);box-shadow:0 7px 17px rgba(18,34,52,.13)}.model-tab.active>span{background:#3a4f65;color:#f3a16f}.model-tab.active small{color:#b9c6d4}.model-tab-panel{display:none;animation:appear .2s ease}.model-tab-panel.active{display:block}.gallery-panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:3px 0 12px}.gallery-panel-heading h3{font-size:17px;margin:7px 0 4px}.gallery-panel-heading p{font-size:11px;line-height:1.6;margin:0;max-width:780px}.gallery-index{font:9px var(--mono);color:#9aa5b1;white-space:nowrap;padding-top:7px}.gallery-scene{margin-top:0}.gallery-footnote{padding:11px 13px;border:1px solid #e1e8ed;background:#f7fafb;border-radius:8px;margin-top:10px;color:#667789;font-size:10px;line-height:1.6}.model-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 14px;margin:0 0 17px;border:1px solid #e7e1db;background:#fffaf6;border-radius:9px}.model-shortcut strong,.model-shortcut span{display:block}.model-shortcut strong{font-size:11px}.model-shortcut span{font-size:10px;color:var(--muted);margin-top:2px}
+/* Industry / Asset Sentinel */
+.industry-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);background:linear-gradient(115deg,#142437 0%,#203950 67%,#2b5262 100%);color:#fff;border-radius:17px;overflow:hidden;margin:8px 0 25px;min-height:290px}.industry-hero-copy{padding:31px 20px 28px 31px}.industry-hero h1{font-size:clamp(29px,3.2vw,43px);color:#fff;margin:9px 0 11px}.industry-hero p{color:#bdcbd7;max-width:690px;font-size:13px;line-height:1.7;margin:0}.industry-hero-points{display:flex;gap:8px 15px;flex-wrap:wrap;margin-top:18px;color:#e8b18d;font:9px var(--mono);letter-spacing:.04em}.industry-hero-art{position:relative;min-height:270px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at center,rgba(106,155,174,.22),transparent 58%)}.orbit{position:absolute;border:1px solid rgba(210,228,239,.22);border-radius:50%;width:210px;height:210px}.orbit-one{transform:rotateX(65deg) rotate(20deg)}.orbit-two{width:255px;height:255px;transform:rotateY(66deg) rotate(-18deg);border-style:dashed}.orbit-core{width:108px;height:108px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle at 33% 28%,#45677b,#1d344a 66%);border:1px solid rgba(234,177,137,.7);box-shadow:0 0 45px rgba(211,141,103,.18);font-weight:800;font-size:19px;letter-spacing:.08em}.orbit-core span{font:8px var(--mono);letter-spacing:.16em;color:#f1a477}.orbit-node{position:absolute;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#2d4c61;border:1px solid #8ca5b5;color:#f0b38d;font:10px var(--mono);box-shadow:0 4px 16px rgba(0,0,0,.18)}.node-a{top:18%;left:24%}.node-b{bottom:17%;left:32%}.node-c{top:25%;right:17%}
+.industry-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:25px 0 12px}.industry-section-title h2{font-size:21px;margin:5px 0 4px}.industry-section-title p{font-size:11px;line-height:1.6;margin:0;max-width:760px}.sentinel-intro-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:13px}.sentinel-intro-card{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px}.sentinel-icon{width:30px;height:30px;border-radius:8px;background:#eef3f5;display:grid;place-items:center;color:var(--blue);font-size:17px;flex:0 0 auto}.sentinel-intro-card strong,.sentinel-intro-card span{display:block}.sentinel-intro-card strong{font-size:11px;margin-bottom:3px}.sentinel-intro-card div>span{font-size:9px;color:var(--muted);line-height:1.5}
+.sentinel-workspace{background:#e9edf0;border:1px solid #dce2e7;border-radius:15px;padding:15px}.sentinel-workspace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:7px 6px 15px}.sentinel-workspace-head h2{font-size:19px;color:var(--ink);margin:5px 0}.sentinel-workspace-head p{font-size:11px;margin:0;line-height:1.6}.sentinel-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.sentinel-demo-pill{font:9px var(--mono);color:#6f7e8e;background:#fff;border:1px solid #d8e0e6;padding:7px 9px;border-radius:20px;white-space:nowrap}.sentinel-workspace-body{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:12px}.sentinel-form-column,.sentinel-results-column{display:grid;align-content:start;gap:11px;min-width:0}.sentinel-panel{background:#fff;border:1px solid #dce3e8;border-radius:11px;padding:15px}.capture-labels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 6px 0;color:#8290a0;font:8px var(--mono);letter-spacing:.08em}.capture-labels span:last-child{color:#a45d39}.sentinel-data-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.sentinel-measure>label{display:block;font-size:10px;color:#4f5d6d;font-weight:700;margin-bottom:6px}.paired-inputs{display:grid;grid-template-columns:1fr 1fr;gap:7px}.paired-inputs input,.sentinel-panel .field input,.sentinel-panel .field select{min-width:0;width:100%;border:1px solid #d6dde4;border-radius:7px;background:#fff;padding:9px 8px;color:var(--ink);font-size:12px}.paired-inputs input:focus{outline:none;border-color:#d78b61;box-shadow:0 0 0 3px rgba(224,120,66,.1)}.paired-inputs input:nth-child(2){background:#fffaf7}.csv-import-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid #edf0f2;margin-top:14px;padding-top:12px}.csv-import-row strong,.csv-import-row small{display:block}.csv-import-row strong{font-size:10px}.csv-import-row small{color:var(--muted);font-size:9px;line-height:1.5;max-width:390px;margin-top:3px}.capture-imports{display:flex;gap:6px;flex-wrap:wrap}.sentinel-threshold-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.sentinel-result-card{background:linear-gradient(160deg,#1d3043,#243e52);border-radius:11px;padding:17px;color:#fff;min-height:260px}.sentinel-result-empty{text-align:center;display:grid;justify-items:center;align-content:center;min-height:224px}.empty-orbit{width:48px;height:48px;border-radius:50%;border:1px dashed #7894a5;display:grid;place-items:center;font-size:25px;color:#efaa7c;margin-bottom:12px}.sentinel-result-empty .eyebrow{color:#efaa7c}.sentinel-result-empty h3{font-size:16px;margin:7px 0}.sentinel-result-empty p{font-size:10px;color:#c0cfdb;max-width:270px;line-height:1.6;margin:0}.sentinel-result-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.sentinel-result-head .eyebrow{color:#f0ab7c}.sentinel-result-head h3{font-size:16px;margin:5px 0 3px;color:#fff}.sentinel-result-head p{color:#c0cfdb;font-size:9px;line-height:1.5;margin:0}.sentinel-count{font:10px var(--mono);color:#fff;background:rgba(255,255,255,.12);padding:6px 8px;border-radius:7px;white-space:nowrap}.sentinel-bars{display:grid;gap:10px;margin-top:17px}.sentinel-signal{display:grid;grid-template-columns:85px 1fr auto;gap:7px;align-items:center;font-size:9px}.sentinel-signal .signal-name{color:#d4e0e9}.sentinel-track{height:6px;border-radius:10px;background:rgba(255,255,255,.13);overflow:hidden}.sentinel-track i{display:block;height:100%;background:#7eb6aa;border-radius:10px}.sentinel-track i.flag{background:#f0a477}.sentinel-signal b{font:10px var(--mono);color:#fff}.sentinel-recommendation{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px;margin-top:15px}.sentinel-recommendation strong{display:block;font-size:10px;color:#f1b38e}.sentinel-recommendation p{font-size:9px;color:#d2dce5;line-height:1.55;margin:4px 0 0}.sentinel-actions-list{padding-left:16px;margin:9px 0 0;color:#d2dce5;font-size:9px;line-height:1.7}.sentinel-explain-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:15px}.sentinel-explain-card h3{font-size:14px;margin:9px 0 5px}.sentinel-explain-card p{font-size:10px;line-height:1.6;margin:0}.sentinel-mini-flow{display:flex;align-items:center;justify-content:space-between;gap:5px;background:#f5f7f8;padding:9px;border-radius:7px;margin:12px 0 8px;font:9px var(--mono);color:#536578}.sentinel-mini-flow b{color:var(--accent)}.sentinel-explain-card small{font-size:9px;color:var(--muted)}
+.industry-use-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.industry-use-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:17px}.use-no{font:9px var(--mono);letter-spacing:.1em;color:var(--accent)}.use-icon{width:35px;height:35px;margin:10px 0 8px;border-radius:9px;background:#eef3f5;display:grid;place-items:center;font-size:18px;color:var(--blue)}.industry-use-card h3{font-size:15px;margin:0 0 7px}.industry-use-card>p{font-size:10px;line-height:1.65;margin:0 0 11px}.use-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px}.use-pair span{display:block;padding:9px;background:#f5f7f8;border-radius:7px;color:#647386;font-size:9px;line-height:1.55}.use-pair b{display:block;color:#38495c;margin-bottom:3px;font-size:9px}.monitor-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.monitor-step{background:#fff;border:1px solid var(--line);padding:13px;border-radius:9px}.monitor-step>span{display:grid;place-items:center;width:24px;height:24px;background:#20374d;color:#f2a67a;border-radius:7px;font:9px var(--mono)}.monitor-step>b{display:block;font-size:11px;margin:8px 0 4px}.monitor-step p{font-size:9px;line-height:1.55;margin:0}.industry-mapping-table{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:auto}.mapping-row{display:grid;grid-template-columns:.75fr 1.15fr 1.25fr 1.4fr;gap:12px;padding:11px 13px;border-top:1px solid #edf0f2;font-size:9px;line-height:1.6;color:#657487;min-width:730px}.mapping-row:first-child{border-top:0}.mapping-row b{color:#304255}.mapping-head{background:#f2f5f7;color:#6f7d8e;font:8px var(--mono);text-transform:uppercase;letter-spacing:.06em}.industry-bullets{padding-left:16px;color:#677588;font-size:10px;line-height:1.75;margin:8px 0 0}.industry-bullets li{margin:3px 0}.industry-steps{margin-bottom:3px}
+@media(max-width:980px){.sentinel-workspace-body{grid-template-columns:1fr}.sentinel-results-column{grid-template-columns:1fr 1fr}.sentinel-result-card{min-height:250px}.industry-hero{grid-template-columns:1.2fr .8fr}}
+@media(max-width:820px){.model-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.industry-hero{grid-template-columns:1fr}.industry-hero-art{min-height:210px}.sentinel-results-column{grid-template-columns:1fr 1fr}.industry-steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.model-gallery-intro{display:block}.gallery-gesture{margin-top:12px}.model-tabs{gap:6px}.model-tab{padding:10px 8px;grid-template-columns:24px 1fr}.model-tab>span{width:23px;height:23px}.model-tab b{font-size:11px}.gallery-panel-heading{display:block}.gallery-index{display:block;margin-top:9px}.model-shortcut{align-items:flex-start;flex-direction:column}.industry-hero-copy{padding:25px 20px}.industry-hero-art{min-height:190px}.sentinel-intro-grid{grid-template-columns:1fr}.sentinel-workspace{padding:9px}.sentinel-workspace-head{display:block}.sentinel-head-actions{justify-content:flex-start;margin-top:12px}.sentinel-data-grid,.sentinel-threshold-grid{grid-template-columns:1fr}.csv-import-row{display:block}.capture-imports{margin-top:10px}.sentinel-results-column{grid-template-columns:1fr}.industry-use-grid,.use-pair{grid-template-columns:1fr}.monitor-flow{grid-template-columns:1fr 1fr}.industry-section-title{display:block}.industry-section-title>.tag,.industry-section-title>.button{display:inline-block;margin-top:9px}}
+
+.demo-change-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #edf0f2;font-size:10px}.demo-change-row:first-of-type{margin-top:3px}.demo-change-row span{color:var(--muted)}.demo-change-row strong{font:700 10px var(--mono);color:#33465a}.demo-change-row b{font:700 10px var(--mono);color:#a65d37;white-space:nowrap}.sentinel-demo-story .card.dark{min-height:100%}.sentinel-demo-story .card.dark h3{font-size:17px}.sentinel-demo-story .card.dark p{font-size:12px;line-height:1.75;margin:0 0 12px}
+
+
+/* Mobile-first polish, adaptive themes and settings */
+html{min-height:100%;-webkit-text-size-adjust:100%;overscroll-behavior-x:none;scroll-padding-top:105px}
+body{min-height:100vh;min-height:100svh;overflow-x:hidden}
+button,.button,.icon-btn,.nav button{ -webkit-tap-highlight-color:transparent; touch-action:manipulation }
+canvas{max-width:100%}
+.settings-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.settings-card{min-width:0;padding:20px}
+.settings-card-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:16px}
+.settings-card-head h2{font-size:18px;margin:6px 0 5px}
+.settings-card-head p{margin:0;max-width:520px}
+.settings-symbol{width:39px;height:39px;border-radius:11px;background:var(--soft-accent,#fbefe7);color:var(--accent);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.settings-card .field select{width:100%;min-height:43px;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--surface);color:var(--ink)}
+.accent-preview{display:flex;align-items:center;gap:8px;margin-top:17px}.accent-preview span{height:9px;width:34px;border-radius:20px;background:var(--accent)}.accent-preview span:nth-child(2){background:var(--accent-2)}.accent-preview span:nth-child(3){background:var(--blue)}.accent-preview span:nth-child(4){background:var(--teal)}.accent-preview small{color:var(--muted);font-size:10px;margin-left:3px}
+.setting-toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);cursor:pointer}.setting-toggle:first-of-type{margin-top:12px}.setting-toggle b,.setting-toggle small{display:block}.setting-toggle b{font-size:12px}.setting-toggle small{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}.setting-toggle input{width:20px;height:20px;flex:0 0 auto;accent-color:var(--accent)}
+.settings-info{margin-top:14px;border-radius:9px;background:var(--soft-surface);padding:12px 13px}.settings-info strong{font-size:11px}.settings-info p{font-size:10px;line-height:1.6;margin:4px 0 0}
+.mobile-check-list{display:grid;gap:11px}.mobile-check-list>div{display:flex;gap:10px;align-items:flex-start}.mobile-check-list>div>span{display:grid;place-items:center;width:21px;height:21px;flex:0 0 auto;border-radius:50%;background:var(--soft-accent);color:var(--accent);font-weight:800;font-size:11px}.mobile-check-list b,.mobile-check-list small{display:block}.mobile-check-list b{font-size:11px}.mobile-check-list small{font-size:10px;line-height:1.55;color:var(--muted);margin-top:2px}.settings-save-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding:14px 2px}.quick-settings{font-size:15px;min-width:36px}.mobile-nav-wrap{display:contents}
+html[data-text-size="large"] body{font-size:17px}
+html[data-text-size="large"] .lead{font-size:16px}
+html[data-text-size="large"] .small-note,html[data-text-size="large"] .field label,html[data-text-size="large"] .field input,html[data-text-size="large"] .field select,html[data-text-size="large"] .field textarea{font-size:1.08em}
+html.large-tap-targets .button,html.large-tap-targets .icon-btn,html.large-tap-targets .nav button{min-height:46px;padding-top:11px;padding-bottom:11px}
+html.reduce-motion *,html.reduce-motion *::before,html.reduce-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html[data-theme="dark"]{color-scheme:dark;--ink:#e4ebf2;--ink-2:#26384a;--muted:#a2b0bf;--muted-2:#8696a8;--paper:#101923;--surface:#182431;--line:#304151;--nav:#0b131d;--nav-2:#203246;--shadow:0 12px 34px rgba(0,0,0,.25);--soft-surface:#202e3c;--soft-accent:#3a2d28}
+html[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .topbar{border-color:var(--line)}
+html[data-theme="dark"] .icon-btn,html[data-theme="dark"] .button{background:#202e3c;border-color:#3a4c5e;color:var(--ink)}
+html[data-theme="dark"] .button.primary{background:#d9e3ec;border-color:#d9e3ec;color:#152333}
+html[data-theme="dark"] .button.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+html[data-theme="dark"] .button.subtle,html[data-theme="dark"] .icon-btn:hover,html[data-theme="dark"] .button:hover{background:#293a4a;border-color:#536679}
+html[data-theme="dark"] .card,html[data-theme="dark"] .step,html[data-theme="dark"] .hat,html[data-theme="dark"] .industry-use-card,html[data-theme="dark"] .industry-card,html[data-theme="dark"] .model-gallery-intro,html[data-theme="dark"] .model-tab,html[data-theme="dark"] .source-link,html[data-theme="dark"] .settings-info{background:var(--surface);border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .model-tab.active{background:var(--nav-2);border-color:var(--nav-2);color:#fff}
+html[data-theme="dark"] .model-tab>span,html[data-theme="dark"] .industry-icon,html[data-theme="dark"] .use-icon,html[data-theme="dark"] .sentinel-icon{background:#2a3a49;color:#b8d5e2}
+html[data-theme="dark"] .tag{background:#2c3b49;color:#c2cfdb}
+html[data-theme="dark"] .tag.orange{background:#49352d;color:#f3b18c}html[data-theme="dark"] .tag.green{background:#263f36;color:#9bd1b5}html[data-theme="dark"] .tag.blue{background:#263d4c;color:#a8cedf}html[data-theme="dark"] .tag.gold{background:#433b2d;color:#e0c48a}
+html[data-theme="dark"] .callout{background:#3b2d28;color:#f1c9b2}html[data-theme="dark"] .callout.blue{background:#243846;color:#c0d6e1}html[data-theme="dark"] .callout.green{background:#243b32;color:#b7d7c6}html[data-theme="dark"] .callout.warning{background:#40382a;color:#e7d4a8}
+html[data-theme="dark"] .field label,html[data-theme="dark"] .paired-inputs input,html[data-theme="dark"] .sentinel-panel .field label{color:#c5d0db}
+html[data-theme="dark"] .field input,html[data-theme="dark"] .field select,html[data-theme="dark"] .field textarea,html[data-theme="dark"] .hat textarea,html[data-theme="dark"] .settings-card .field select,html[data-theme="dark"] .paired-inputs input,html[data-theme="dark"] .sentinel-panel .field input,html[data-theme="dark"] .sentinel-panel .field select{background:#111c27;border-color:#405264;color:var(--ink)}
+html[data-theme="dark"] .paired-inputs input:nth-child(2){background:#2c2926}
+html[data-theme="dark"] .table-wrap,html[data-theme="dark"] .industry-mapping-table{border-color:var(--line)}
+html[data-theme="dark"] th,html[data-theme="dark"] .mapping-head{background:#233342;color:#b6c3d0}
+html[data-theme="dark"] td,html[data-theme="dark"] .mapping-row{color:#c3cfda;border-color:#2b3a48}
+html[data-theme="dark"] tbody tr:hover{background:#22313f}
+html[data-theme="dark"] .result-tile,html[data-theme="dark"] .viz-readout,html[data-theme="dark"] .viz-temp-pair>div,html[data-theme="dark"] .stat-chip{background:#202e3b;border-color:#344757;color:var(--ink)}
+html[data-theme="dark"] .chart-wrap{background:#172431;border-color:#344757}
+html[data-theme="dark"] .mapping div,html[data-theme="dark"] .use-pair span,html[data-theme="dark"] .monitor-step,html[data-theme="dark"] .sentinel-mini-flow,html[data-theme="dark"] .gallery-gesture{background:#22313e;color:#c3cfda;border-color:#344757}
+html[data-theme="dark"] .mapping strong,html[data-theme="dark"] .use-pair b,html[data-theme="dark"] .demo-change-row strong{color:#e3ebf2}
+html[data-theme="dark"] .sentinel-workspace{background:#1c2935;border-color:#334454}
+html[data-theme="dark"] .sentinel-workspace-head h2{color:#e4ebf2}
+html[data-theme="dark"] .sentinel-panel,html[data-theme="dark"] .sentinel-intro-card,html[data-theme="dark"] .sentinel-explain-card{background:#192633;border-color:#334454;color:#e4ebf2}
+html[data-theme="dark"] .sentinel-demo-pill{background:#263746;border-color:#405365;color:#cfdae4}
+html[data-theme="dark"] .sentinel-data-grid label{color:#c5d0db}
+html[data-theme="dark"] .source-link{color:#d5e0e8}
+html[data-theme="dark"] .source-link:hover{background:#263746}
+html[data-theme="dark"] .footer{border-color:var(--line);color:#8493a2}
+html[data-theme="dark"] .industry-hero{border-color:#33485a}
+html[data-theme="dark"] .accent-preview small{color:var(--muted)}
+html[data-theme="dark"] .sentinel-workspace-head p,html[data-theme="dark"] .sentinel-intro-card div>span{color:#aab8c5}
+@media(max-width:820px){
+  .sidebar{padding-top:max(10px,env(safe-area-inset-top));}
+  .main{padding-bottom:calc(35px + env(safe-area-inset-bottom));}
+  .mobile-nav-wrap{display:flex;align-items:center;gap:5px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:thin;overscroll-behavior-x:contain;padding:7px 0 3px}
+  .mobile-nav-wrap .nav-label{display:none}
+  .mobile-nav-wrap .nav{display:contents}
+  .mobile-nav-wrap .nav button{flex:0 0 auto;min-height:42px;scroll-snap-align:start}
+  .topbar{height:auto;min-height:52px;padding:8px 0;align-items:center}
+  .top-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}
+  .quick-settings{display:inline-flex}
+}
+@media(max-width:560px){
+  .main{padding-left:12px;padding-right:12px}
+  .topbar{gap:6px}.crumb{font-size:10px;white-space:nowrap}.top-actions{gap:4px}
+  .top-actions .icon-btn{font-size:0;min-width:35px;min-height:38px;padding:7px 9px}
+  #importButton::before{content:"↥";font-size:16px}#exportAll::before{content:"⇩";font-size:16px}#printPage::before{content:"▤";font-size:16px}#quickSettings::before{content:"⚙";font-size:16px}
+  .settings-layout{grid-template-columns:1fr}.settings-card{padding:16px}.settings-save-row{align-items:stretch;flex-direction:column}.settings-save-row .button{width:100%}
+  .nav button{font-size:11px;padding:8px 10px;min-height:42px}
+  .page-head .head-actions .button{min-height:42px}
+  .field input,.field select,.field textarea,.paired-inputs input,.sentinel-panel .field input,.sentinel-panel .field select{font-size:16px;min-height:44px}
+  .form-actions .button,.button-row .button,.hero-actions .button{min-height:44px}
+  input[type=range]{min-height:28px}
+  .model-stage,.model-stage canvas{height:300px;min-height:300px}
+  .experiment-stage,.experiment-stage canvas{height:280px}
+  .result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .footer{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+}
+@media(max-width:360px){.brand-name{font-size:9px}.brand-sub{font-size:8px}.nav button{font-size:10px;padding:7px 8px}.metric{font-size:24px}.result-tile .v{font-size:18px}}
+@media(orientation:landscape) and (max-height:520px) and (max-width:900px){.sidebar{position:relative}.hero{grid-template-columns:1fr 1fr}.hero-copy{padding:18px}.hero-model,.hero-model canvas{min-height:180px;height:180px}.model-stage,.model-stage canvas{height:250px;min-height:250px}.experiment-stage,.experiment-stage canvas{height:240px}}
+@supports(padding:max(0px)){body{padding-bottom:env(safe-area-inset-bottom)}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">SHM</div><div><div class="brand-name">PENDULUM ENGINEERING LAB</div><div class="brand-sub">SMART SHM · CONVENTION EDITION</div></div></div>
+    <div class="mobile-nav-wrap">
+    <div class="nav-label">Workspace</div>
+    <nav class="nav" aria-label="Main navigation" role="navigation">
+      <button class="active" data-page="overview"><span class="nav-icon">⌂</span>Overview</button>
+      <button data-page="model"><span class="nav-icon">◉</span>3D Lab · all scenes</button>
+    </nav>
+    <div class="nav-label">Experiment modules</div>
+    <nav class="nav" aria-label="Experiment modules">
+      <button data-page="physics"><span class="nav-icon">g</span>Physics · gravity</button>
+      <button data-page="chemistry"><span class="nav-icon">♨</span>Chemistry · heat loss</button>
+      <button data-page="mathematics"><span class="nav-icon">∠</span>Mathematics · geometry</button>
+    </nav>
+    <div class="nav-label">Application</div>
+    <nav class="nav" aria-label="Application and presentation">
+      <button data-page="industry"><span class="nav-icon">▦</span>Industry pathway</button>
+      <button data-page="method"><span class="nav-icon">◈</span>Six Thinking Hats</button>
+      <button data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
+    </nav>
+    </div>
+    <div class="nav-foot"><strong>Experimental tool · not a certified SHM system</strong>Use measured values from your own setup. Demonstration scenarios are clearly marked as illustrative.</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar"><div class="crumb">SMART SHM <span style="color:#b1bac3">/</span> <strong id="crumbCurrent">Overview</strong></div><div class="top-actions"><span class="status-chip" id="storageChip">● LOCAL SESSION · STARTING</span><button class="icon-btn" id="importButton">Import backup</button><input type="file" id="importFile" accept="application/json,.json" hidden><button class="icon-btn" id="exportAll">Export data</button><button class="icon-btn" id="printPage">Print</button><button class="icon-btn quick-settings" id="quickSettings" aria-label="Open settings" title="Settings">⚙</button></div></div>
+
+    <!-- OVERVIEW -->
+    <section class="page active" id="page-overview">
+      <div class="eyebrow">Integrated STEM investigation · pendulum system</div>
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="hero-tag">Motion · measurement · thermal behaviour</div>
+          <h1>One pendulum.<br>Three ways to understand a system.</h1>
+          <p>Explore how a simple pendulum connects gravitational measurement, heat transfer and motion geometry. Test the model, enter your experiment data, and see how the same principles appear in engineering practice.</p>
+          <div class="hero-actions"><button class="button accent" data-go="model">Explore all 3D scenes ↗</button><button class="button" data-go="physics">Start analysis</button></div>
+        </div>
+        <div class="hero-model"><canvas id="heroCanvas" aria-label="Interactive 3D pendulum model"></canvas><div class="model-caption"><span>LIVE MODEL PREVIEW</span><span>DRAG TO ROTATE · WHEEL TO ZOOM</span></div></div>
+      </div>
+      <div class="grid four">
+        <div class="card tight"><div class="metric">01</div><div class="metric-label">Determine local gravitational acceleration</div><div class="metric-foot">T² against length → estimate g</div></div>
+        <div class="card tight"><div class="metric">02</div><div class="metric-label">Compare thermal dissipation</div><div class="metric-foot">Stationary vs moving bob</div></div>
+        <div class="card tight"><div class="metric">03</div><div class="metric-label">Study arc length and chord</div><div class="metric-foot">Amplitude and small-angle behaviour</div></div>
+        <div class="card tight"><div class="metric">04</div><div class="metric-label">Connect the model to industry</div><div class="metric-foot">Monitoring, vibration, thermal systems</div></div>
+      </div>
+      <div class="section-heading"><h2>Experiment workbenches</h2><span class="tag">3 required analyses</span></div>
+      <div class="grid three">
+        <div class="card module-card" data-go="physics"><span class="module-no">MODULE 01 / PHYSICS</span><span class="arrow">↗</span><h3>Measure gravity</h3><p>Use the period–length relationship to estimate local gravitational acceleration and compare it with 9.81 m/s².</p></div>
+        <div class="card module-card" data-go="chemistry"><span class="module-no">MODULE 02 / CHEMISTRY</span><span class="arrow">↗</span><h3>Track heat loss</h3><p>Compare thermal energy loss in a stationary bob and a swinging bob using temperature–time readings.</p></div>
+        <div class="card module-card" data-go="mathematics"><span class="module-no">MODULE 03 / MATHEMATICS</span><span class="arrow">↗</span><h3>Compare path geometry</h3><p>Calculate the curved arc and straight-line chord for different release angles.</p></div>
+      </div>
+      <div class="section-heading"><h2>How to use this lab</h2><span class="tag green">Suggested workflow</span></div>
+      <div class="grid three">
+        <div class="card tight"><div class="eyebrow">01 · Observe</div><h3 style="margin-top:8px">Explore the motion</h3><p class="small-note">Adjust the model length and release angle. Play the motion and rotate the view to inspect the swing plane.</p></div>
+        <div class="card tight"><div class="eyebrow">02 · Measure</div><h3 style="margin-top:8px">Enter real readings</h3><p class="small-note">Add observations from your pendulum experiment. Use sample data only to check how the calculations and graphs work.</p></div>
+        <div class="card tight"><div class="eyebrow">03 · Interpret</div><h3 style="margin-top:8px">Explain the evidence</h3><p class="small-note">Review regression results, note sources of uncertainty, and connect the principles to a real engineering use case.</p></div>
+      </div>
+      <div class="callout blue section-gap"><strong>Project scope.</strong> This application supports the pendulum investigation described in the project brief. It is an educational analysis tool: it does not acquire sensor data automatically, certify a structure, or replace engineering inspection.</div>
+    </section>
+
+    <!-- MODEL -->
+    <section class="page" id="page-model"><div class="page-head"><div><div class="eyebrow">Virtual experiment · nonlinear motion</div><h1>The 3D model gallery</h1><p class="lead">Four interactive scenes, gathered in one place. Explore the base pendulum dynamics, then switch between the three experiment-specific models. Drag to orbit and scroll to zoom.</p></div><div class="head-actions"><button class="button" id="resetCamera">Reset active camera</button></div></div>
+      <div class="model-gallery-intro">
+        <div><span class="eyebrow">ONE LAB · FOUR VIEWS</span><h2>Choose what you want to explore</h2><p>Each model has its own controls and visual explanation. The three experiment scenes are collected here so the workbenches can stay focused on measurements and analysis.</p></div>
+        <div class="gallery-gesture"><span>↗</span><strong>Orbit · zoom · animate</strong><small>Mouse or touch controls</small></div>
+      </div>
+      <div class="model-tabs" role="tablist" aria-label="3D experiment scenes">
+        <button class="model-tab active" type="button" role="tab" aria-selected="true" data-model-tab="dynamics"><span>01</span><b>Dynamics</b><small>Full pendulum rig</small></button>
+        <button class="model-tab" type="button" role="tab" aria-selected="false" data-model-tab="physics"><span>02</span><b>Physics</b><small>Gravity & period</small></button>
+        <button class="model-tab" type="button" role="tab" aria-selected="false" data-model-tab="chemistry"><span>03</span><b>Chemistry</b><small>Thermal comparison</small></button>
+        <button class="model-tab" type="button" role="tab" aria-selected="false" data-model-tab="mathematics"><span>04</span><b>Mathematics</b><small>Arc & chord</small></button>
+      </div>
+      <div class="model-tab-panel active" id="modeltab-dynamics" role="tabpanel">
+        <div class="gallery-panel-heading"><div><span class="tag orange">Core motion model</span><h3>Explore the pendulum itself</h3><p>Change length, release angle, bob mass and damping. This is the master motion scene that introduces the system used by all three investigations.</p></div><span class="gallery-index">SCENE 01 / 04</span></div>
+
+      <div class="model-layout">
+        <div>
+          <div class="model-stage"><canvas id="mainCanvas" aria-label="Rotatable three-dimensional simple pendulum simulation"></canvas><div class="stage-label">VIRTUAL RIG · 3D VIEW</div><div class="stage-help">DRAG · ORBIT &nbsp; / &nbsp; WHEEL · ZOOM</div></div>
+          <div class="model-stats">
+            <div class="stat-chip"><span>Instant angle</span><strong id="statAngle">24.0°</strong></div>
+            <div class="stat-chip"><span>Estimated period</span><strong id="statPeriod">1.42 s</strong></div>
+            <div class="stat-chip"><span>Angular speed</span><strong id="statOmega">0.00 rad/s</strong></div>
+            <div class="stat-chip"><span>Bob position</span><strong id="statPosition">—</strong></div>
+          </div>
+        </div>
+        <div class="model-controls">
+          <div class="card">
+            <div class="card-title"><h3>Model parameters</h3><span class="tag orange">Live</span></div>
+            <div class="control"><div class="control-head"><label for="modelLength">Pendulum length</label><output id="modelLengthOut">0.50 m</output></div><input id="modelLength" type="range" min="0.25" max="1.20" value="0.50" step="0.01"><div class="range-ends"><span>0.25 m</span><span>1.20 m</span></div></div>
+            <div class="control" style="margin-top:17px"><div class="control-head"><label for="modelAngle">Release angle</label><output id="modelAngleOut">24°</output></div><input id="modelAngle" type="range" min="2" max="70" value="24" step="1"><div class="range-ends"><span>2°</span><span>70°</span></div></div>
+            <div class="control" style="margin-top:17px"><div class="control-head"><label for="modelMass">Bob mass</label><output id="modelMassOut">60 g</output></div><input id="modelMass" type="range" min="20" max="250" value="60" step="5"><div class="range-ends"><span>20 g</span><span>250 g</span></div></div>
+            <div class="control" style="margin-top:17px"><div class="control-head"><label for="modelDamping">Angular damping</label><output id="modelDampingOut">0.02 s⁻¹</output></div><input id="modelDamping" type="range" min="0" max="0.8" value="0.02" step="0.01"><div class="range-ends"><span>0 · ideal</span><span>0.80 · damped</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><h3>Simulation controls</h3><span class="tag green" id="motionStatus">Paused</span></div>
+            <div class="button-row"><button class="button primary" id="playMotion">▶ Play</button><button class="button" id="resetMotion">↺ Reset</button></div>
+            <label class="check-row" style="margin-top:12px"><input id="toggleTrail" type="checkbox" checked> Show swing path</label>
+            <label class="check-row" style="margin-top:8px"><input id="toggleGhosts" type="checkbox" checked> Show end positions</label>
+            <p class="small-note" style="margin:12px 0 0">The motion is integrated from θ̈ = −(g/L) sin θ − cθ̇. This includes the nonlinear sine term and an adjustable damping term.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid two section-gap">
+        <div class="card"><div class="card-title"><h3>What the model represents</h3><span class="tag blue">Idealised system</span></div><p class="small-note">A point-mass bob on a light, inextensible string, fixed pivot and uniform gravitational field. The slider changes the bob’s displayed size and the model mass label; in the ideal simple-pendulum equation, mass does not change the period.</p></div>
+        <div class="card"><div class="card-title"><h3>Model assumptions</h3><span class="tag gold">Read before presenting</span></div><p class="small-note">The simulation does not include string elasticity, pivot friction detail, air-flow forces, bob shape effects or support flexibility. The displayed period is an estimate; real measurements should be used in the Physics workbench.</p></div>
+      </div>
+    
+      </div>
+      <div class="model-tab-panel" id="modeltab-physics" role="tabpanel">
+        <div class="gallery-panel-heading"><div><span class="tag blue">Experiment 01 · Physics</span><h3>Gravity measurement rig</h3><p>Investigate how pendulum length affects period. The app’s analysis uses experimental timing, not the model’s predicted period.</p></div><span class="gallery-index">SCENE 02 / 04</span></div>
+        <div class="card experiment-visual gallery-scene">
+        <div class="card-title"><div><span class="eyebrow">Interactive apparatus</span><h3 style="margin-top:5px">3D gravity experiment</h3></div><span class="tag blue">Length · angle · period</span></div>
+        <p class="small-note">Explore how changing the pendulum length and release angle changes its motion. Drag the scene to orbit it; scroll to zoom. The displayed period uses the small-angle estimate.</p>
+        <div class="experiment-model-grid">
+          <div class="experiment-stage"><canvas id="physics3DCanvas" aria-label="Interactive three-dimensional pendulum apparatus for the gravity experiment"></canvas><span class="stage-caption">PHYSICS RIG · ORBITABLE 3D VIEW</span><span class="stage-instruction">DRAG TO ROTATE · SCROLL TO ZOOM</span></div>
+          <div class="experiment-controls">
+            <div class="control"><div class="control-head"><label for="pVizLength">String length</label><output id="pVizLengthOut">50 cm</output></div><input id="pVizLength" type="range" min="20" max="120" step="1" value="50"><div class="range-ends"><span>20 cm</span><span>120 cm</span></div></div>
+            <div class="control"><div class="control-head"><label for="pVizAngle">Release angle</label><output id="pVizAngleOut">24°</output></div><input id="pVizAngle" type="range" min="2" max="60" step="1" value="24"><div class="range-ends"><span>2°</span><span>60°</span></div></div>
+            <div class="viz-readout"><span>Estimated period</span><strong id="physicsVizPeriod">1.42 s</strong><small>Using g = 9.81 m/s²</small></div>
+            <div class="button-row"><button class="button primary" id="physicsVizPlay">▶ Play motion</button><button class="button" id="physicsVizReset">↺ Reset</button></div>
+            <button class="button small" id="physicsVizCopyLength">Use this length in measurement form</button>
+          </div>
+        </div>
+        <div class="small-note" style="margin-top:10px">Visual demonstration only: use stopwatch, video or sensor readings in the measurement log. The animated period is not an experimental measurement.</div>
+      </div>
+        <div class="gallery-footnote">Use the matching Physics workbench to record measured times, calculate T² and estimate g from the regression gradient.</div>
+      </div>
+      <div class="model-tab-panel" id="modeltab-chemistry" role="tabpanel">
+        <div class="gallery-panel-heading"><div><span class="tag orange">Experiment 02 · Chemistry</span><h3>Thermal dissipation comparison</h3><p>Compare a stationary bob with a moving bob. The colour and airflow are explanatory visuals; the temperature log remains the experimental evidence.</p></div><span class="gallery-index">SCENE 03 / 04</span></div>
+        <div class="card experiment-visual gallery-scene">
+        <div class="card-title"><div><span class="eyebrow">Thermal comparison model</span><h3 style="margin-top:5px">3D stationary vs swinging bob</h3></div><span class="tag orange">Natural vs forced airflow</span></div>
+        <p class="small-note">The scene puts both test conditions side by side. Sphere colour reflects the latest temperature entered for each condition (or the initial temperature before readings exist); airflow is a visual illustration, not a measured flow field.</p>
+        <div class="experiment-model-grid">
+          <div class="experiment-stage"><canvas id="chemistry3DCanvas" aria-label="Interactive three-dimensional comparison of a stationary hot bob and a swinging bob with airflow"></canvas><span class="stage-caption">THERMAL TEST · TWO CONDITIONS</span><span class="stage-instruction">DRAG TO ROTATE · SCROLL TO ZOOM</span></div>
+          <div class="experiment-controls">
+            <div class="viz-temp-pair"><div><span>Stationary bob</span><strong id="chemVizStaticTemp">60.0 °C</strong></div><div><span>Swinging bob</span><strong id="chemVizDynamicTemp">60.0 °C</strong></div></div>
+            <div class="control"><div class="control-head"><label for="chemVizAngle">Swing amplitude</label><output id="chemVizAngleOut">25°</output></div><input id="chemVizAngle" type="range" min="5" max="45" step="1" value="25"><div class="range-ends"><span>5°</span><span>45°</span></div></div>
+            <div class="control"><div class="control-head"><label for="chemAirflow">Airflow illustration</label><output id="chemAirflowOut">65%</output></div><input id="chemAirflow" type="range" min="0" max="100" step="5" value="65"><div class="range-ends"><span>Still air</span><span>More flow</span></div></div>
+            <div class="button-row"><button class="button primary" id="chemVizPlay">▶ Animate swing</button><button class="button" id="chemVizReset">↺ Reset view</button></div>
+            <div class="small-note" id="chemVizDataNote">No temperature readings yet. Both models use the initial temperature.</div>
+          </div>
+        </div>
+        <div class="small-note" style="margin-top:10px">The moving bob illustrates relative air movement. It does not calculate a heat-transfer coefficient or predict a cooling curve; your entered temperature data remains the source of the analysis.</div>
+      </div>
+        <div class="gallery-footnote">Use the Chemistry workbench to enter surface-temperature readings and compare the regression-based heat-release rates.</div>
+      </div>
+      <div class="model-tab-panel" id="modeltab-mathematics" role="tabpanel">
+        <div class="gallery-panel-heading"><div><span class="tag blue">Experiment 03 · Mathematics</span><h3>Half-period geometry</h3><p>Watch the bob travel from +θ to −θ, with the curved arc and straight chord shown together.</p></div><span class="gallery-index">SCENE 04 / 04</span></div>
+        <div class="card experiment-visual gallery-scene">
+        <div class="card-title"><div><span class="eyebrow">Kinematic geometry model</span><h3 style="margin-top:5px">3D arc path and straight chord</h3></div><span class="tag blue">Half-period travel</span></div>
+        <p class="small-note">Watch the bob travel from +θ to −θ. The blue curve is the distance along the pendulum arc; the orange line is the straight chord joining the two extreme positions.</p>
+        <div class="experiment-model-grid">
+          <div class="experiment-stage"><canvas id="mathematics3DCanvas" aria-label="Interactive three-dimensional pendulum showing a curved arc path and a straight chord for half-period travel"></canvas><span class="stage-caption">GEOMETRY MODEL · ARC VS CHORD</span><span class="stage-instruction">DRAG TO ROTATE · SCROLL TO ZOOM</span></div>
+          <div class="experiment-controls">
+            <div class="control"><div class="control-head"><label for="mVizLength">Pendulum length</label><output id="mVizLengthOut">50 cm</output></div><input id="mVizLength" type="range" min="20" max="150" step="1" value="50"><div class="range-ends"><span>20 cm</span><span>150 cm</span></div></div>
+            <div class="control"><div class="control-head"><label for="mVizAngle">Release angle</label><output id="mVizAngleOut">30°</output></div><input id="mVizAngle" type="range" min="1" max="170" step="1" value="30"><div class="range-ends"><span>1°</span><span>170°</span></div></div>
+            <div class="viz-readout"><span>Arc length · half-period</span><strong id="mathVizArc">52.36 cm</strong><small id="mathVizChord">Chord displacement · 50.00 cm</small></div>
+            <div class="button-row"><button class="button primary" id="mathVizPlay">▶ Animate half-period</button><button class="button" id="mathVizReset">↺ Reset</button></div>
+            <button class="button small" id="mathVizUseValues">Use these values in experiment form</button>
+          </div>
+        </div>
+        <div class="small-note" style="margin-top:10px">For angular amplitude θ in radians: arc s = 2Lθ, chord d = 2L sin θ. The scene visualises the ideal geometry; measured values can be compared in the table below.</div>
+      </div>
+        <div class="gallery-footnote">Use the Mathematics workbench to record amplitudes and compare calculated geometry with any measured distances.</div>
+      </div>
+      <div class="callout blue section-gap"><strong>Model vs measurement.</strong> These scenes are idealised visual explanations. Their sliders do not create experimental evidence or replace calibrated timing, temperature or motion measurements.</div>
+</section>
+
+    <!-- PHYSICS -->
+    <section class="page" id="page-physics">
+      <div class="page-head"><div><div class="eyebrow">Module 01 · physics</div><h1>Determine gravitational acceleration</h1><p class="lead">Measure the time for a known number of complete oscillations at different pendulum lengths. The gradient of T² against L gives an experimental estimate of g.</p></div><div class="head-actions"><button class="button" id="physicsSample">Load sample data</button><button class="button danger" id="physicsClear">Clear data</button></div></div>
+      <div class="model-shortcut"><div><strong>Open the gravity 3D scene</strong><span>Explore the string length, release angle and period model in the central gallery.</span></div><button class="button small" type="button" data-open-model="physics">View in 3D Lab ↗</button></div>
+      <div class="grid two">
+        <div class="card"><div class="card-title"><h3>Enter a measurement</h3><span class="tag blue">Experimental data</span></div>
+          <div class="form-grid">
+            <div class="field"><label for="pLength">Pendulum length (cm)</label><input id="pLength" type="number" min="0.1" step="0.1" placeholder="e.g. 50"></div>
+            <div class="field"><label for="pTime">Total time (s)</label><input id="pTime" type="number" min="0.01" step="0.01" placeholder="e.g. 29.50"></div>
+            <div class="field"><label for="pCount">Oscillations counted</label><input id="pCount" type="number" min="1" max="1000" step="1" value="20"></div>
+          </div>
+          <div class="form-actions"><button class="button primary" id="addPhysics">Add measurement</button><span class="small-note" style="align-self:center">Measure length to the bob’s centre of mass.</span></div>
+        </div>
+        <div class="card"><div class="card-title"><h3>Analysis settings</h3><span class="tag">Reference value</span></div><div class="form-grid" style="grid-template-columns:1fr 1fr"><div class="field"><label for="pReference">Reference g (m/s²)</label><input id="pReference" type="number" value="9.81" min="0.01" step="0.01"></div><div class="field"><label for="pUnitNote">Timing method</label><select id="pUnitNote"><option>Stopwatch · manual</option><option>Video frame count</option><option>Sensor / photogate</option></select></div></div><div class="callout blue" style="margin-top:13px">For a simple pendulum at small amplitude: <strong>T = 2π√(L/g)</strong>, therefore <strong>T² = (4π²/g)L</strong>.</div></div>
+      </div>
+      
+      <div class="card section-gap"><div class="card-title"><h3>Measurement log</h3><span class="tag" id="physicsCount">0 readings</span></div><div class="table-wrap"><table><thead><tr><th>Length L (cm)</th><th>Total time (s)</th><th>Oscillations</th><th>Period T (s)</th><th>T² (s²)</th><th></th></tr></thead><tbody id="physicsRows"><tr><td colspan="6" class="empty-row">No readings yet. Add a measurement or load the sample set.</td></tr></tbody></table></div><div class="form-actions"><button class="button accent" id="calcPhysics">Calculate g & plot</button><button class="button" id="exportPhysics">Export CSV</button></div><div class="result-panel" id="physicsResults"><div class="section-heading"><h2>Analysis results</h2><span class="tag green">Linear regression</span></div><div class="result-grid" id="physicsTiles"></div><div class="chart-wrap"><canvas id="physicsChart" aria-label="Graph of squared period against pendulum length"></canvas></div><div class="result-text" id="physicsInterpretation"></div></div></div>
+    </section>
+
+    <!-- CHEMISTRY -->
+    <section class="page" id="page-chemistry">
+      <div class="page-head"><div><div class="eyebrow">Module 02 · chemistry / thermodynamics</div><h1>Compare thermal energy loss</h1><p class="lead">Record the bob’s temperature over time in stationary and swinging conditions. Compare the heat-loss rate calculated from the temperature–time data.</p></div><div class="head-actions"><button class="button" id="chemSample">Load sample data</button><button class="button danger" id="chemClear">Clear data</button></div></div>
+      <div class="model-shortcut"><div><strong>Open the thermal 3D scene</strong><span>Compare the stationary and swinging bob visualisation in the central gallery.</span></div><button class="button small" type="button" data-open-model="chemistry">View in 3D Lab ↗</button></div>
+      <div class="card"><div class="card-title"><h3>Bob and material properties</h3><span class="tag orange">Thermal inputs</span></div><div class="form-grid">
+        <div class="field"><label for="cMass">Bob mass (kg)</label><input id="cMass" type="number" min="0.001" step="0.001" value="0.060"></div>
+        <div class="field"><label for="cHeat">Specific heat capacity (J/kg·°C)</label><input id="cHeat" type="number" min="0.1" step="1" value="450"></div>
+        <div class="field"><label for="cInitial">Initial temperature (°C)</label><input id="cInitial" type="number" step="0.1" value="60"></div>
+      </div><p class="small-note" style="margin:11px 0 0">Heat released is estimated using Q = mc(T₀ − T). Keep bob material, mass, starting temperature and surrounding conditions as consistent as possible between the two tests.</p></div>
+      <div class="grid two section-gap">
+        <div class="card"><div class="card-title"><h3>Stationary bob</h3><span class="tag blue">Natural cooling</span></div><div class="form-grid" style="grid-template-columns:1fr 1fr"><div class="field"><label for="sTime">Elapsed time (s)</label><input id="sTime" type="number" min="0" step="1" placeholder="e.g. 20"></div><div class="field"><label for="sTemp">Temperature (°C)</label><input id="sTemp" type="number" step="0.1" placeholder="e.g. 56.6"></div></div><div class="form-actions"><button class="button primary" id="addStatic">Add reading</button></div><div class="table-wrap"><table style="min-width:280px"><thead><tr><th>Time (s)</th><th>Temp (°C)</th><th>Q released (J)</th><th></th></tr></thead><tbody id="staticRows"></tbody></table></div></div>
+        <div class="card"><div class="card-title"><h3>Swinging bob</h3><span class="tag orange">Motion comparison</span></div><div class="form-grid" style="grid-template-columns:1fr 1fr"><div class="field"><label for="dTime">Elapsed time (s)</label><input id="dTime" type="number" min="0" step="1" placeholder="e.g. 20"></div><div class="field"><label for="dTemp">Temperature (°C)</label><input id="dTemp" type="number" step="0.1" placeholder="e.g. 46.7"></div></div><div class="form-actions"><button class="button primary" id="addDynamic">Add reading</button></div><div class="table-wrap"><table style="min-width:280px"><thead><tr><th>Time (s)</th><th>Temp (°C)</th><th>Q released (J)</th><th></th></tr></thead><tbody id="dynamicRows"></tbody></table></div></div>
+      </div>
+      
+      <div class="card section-gap"><div class="card-title"><h3>Heat-loss comparison</h3><span class="tag green">Rate from regression</span></div><div class="form-actions" style="margin-top:0"><button class="button accent" id="calcChem">Calculate & compare</button><button class="button" id="exportChem">Export CSV</button></div><div class="result-panel" id="chemResults"><div class="result-grid" id="chemTiles"></div><div class="chart-wrap"><canvas id="chemChart" aria-label="Temperature against time for stationary and moving bob"></canvas></div><div class="result-text" id="chemInterpretation"></div></div><div class="callout warning" style="margin-top:14px"><strong>Interpretation limit.</strong> A higher measured cooling rate in the swinging test may be consistent with increased forced convection. This comparison alone does not isolate convection from radiation, conduction, airflow variation or experimental differences.</div></div>
+    </section>
+
+    <!-- MATHEMATICS -->
+    <section class="page" id="page-mathematics">
+      <div class="page-head"><div><div class="eyebrow">Module 03 · mathematics / kinematics</div><h1>Arc length vs displacement</h1><p class="lead">For each release angle θ, compare the curved path and straight-line displacement as the bob travels from one extreme (+θ) to the opposite extreme (−θ) during a half-period.</p></div><div class="head-actions"><button class="button" id="mathSample">Load sample data</button><button class="button danger" id="mathClear">Clear data</button></div></div>
+      <div class="model-shortcut"><div><strong>Open the geometry 3D scene</strong><span>See the half-period arc and chord model in the central gallery.</span></div><button class="button small" type="button" data-open-model="mathematics">View in 3D Lab ↗</button></div>
+      <div class="grid two">
+        <div class="card"><div class="card-title"><h3>Geometry parameters</h3><span class="tag blue">Model input</span></div><div class="form-grid" style="grid-template-columns:1fr 1fr"><div class="field"><label for="mLength">Pendulum length (cm)</label><input id="mLength" type="number" min="0.1" step="0.1" value="50"></div><div class="field"><label for="mAngle">Release angle (°)</label><input id="mAngle" type="number" min="0.1" max="170" step="0.1" placeholder="e.g. 30"></div></div><p class="small-note" style="margin:10px 0 0">Optional measured values let you compare the model with your physical experiment.</p><div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:10px"><div class="field"><label for="mMeasuredArc">Measured arc (cm)</label><input id="mMeasuredArc" type="number" min="0" step="0.01" placeholder="Optional"></div><div class="field"><label for="mMeasuredChord">Measured chord (cm)</label><input id="mMeasuredChord" type="number" min="0" step="0.01" placeholder="Optional"></div></div><div class="form-actions"><button class="button primary" id="addMath">Add angle</button></div></div>
+        <div class="card"><div class="card-title"><h3>Geometric relationship</h3><span class="tag orange">Half-period</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div style="padding:13px;background:#f5f7f8;border-radius:8px"><div class="eyebrow">Curved path</div><div class="metric" style="font-size:23px">s = 2Lθ</div><div class="small-note">θ in radians</div></div><div style="padding:13px;background:#f5f7f8;border-radius:8px"><div class="eyebrow">Straight chord</div><div class="metric" style="font-size:23px">d = 2L sin θ</div><div class="small-note">θ in radians</div></div></div><div class="callout blue" style="margin-top:12px">For a half-period, the angular travel is 2θ: arc s = 2Lθ and chord d = 2L sin θ. At small angles, sin θ ≈ θ (in radians), so the two distances are close.</div></div>
+      </div>
+      
+      <div class="card section-gap"><div class="card-title"><h3>Angle comparison table</h3><span class="tag" id="mathCount">0 angles</span></div><div class="table-wrap"><table><thead><tr><th>Angle</th><th>Arc model (cm)</th><th>Chord model (cm)</th><th>Gap (cm)</th><th>Gap / arc</th><th>Measured arc</th><th>Measured chord</th><th></th></tr></thead><tbody id="mathRows"><tr><td colspan="8" class="empty-row">No angles recorded. Add an angle or load sample data.</td></tr></tbody></table></div><div class="form-actions"><button class="button accent" id="calcMath">Analyse amplitude effect</button><button class="button" id="exportMath">Export CSV</button></div><div class="result-panel" id="mathResults"><div class="result-grid" id="mathTiles"></div><div class="chart-wrap"><canvas id="mathChart" aria-label="Graph comparing arc length and chord displacement by angle"></canvas></div><div class="result-text" id="mathInterpretation"></div></div></div>
+    </section>
+
+    <!-- INDUSTRY -->
+    <section class="page" id="page-industry">
+      <div class="industry-hero">
+        <div class="industry-hero-copy">
+          <div class="eyebrow" style="color:#f1a477">Industry application · concept demonstrator</div>
+          <h1>From motion data<br>to maintenance insight.</h1>
+          <p>SMART SHM connects a simple pendulum investigation to a practical condition-monitoring workflow. Its signature feature is a transparent, three-signal comparison: vibration frequency, vibration level and ambient-corrected temperature.</p>
+          <div class="industry-hero-points"><span>01 / Establish a baseline</span><span>02 / Compare a new capture</span><span>03 / Explain the evidence</span></div><div class="hero-actions"><button class="button accent" type="button" data-go="model">Explore the 3D lab ↗</button></div>
+        </div>
+        <div class="industry-hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core">SHM<span>MONITOR</span></div><div class="orbit-node node-a">VIB</div><div class="orbit-node node-b">TEMP</div><div class="orbit-node node-c">FREQ</div></div>
+      </div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">Signature feature · interactive</span><h2>Asset Sentinel</h2><p>Cross-signal early-change screening for a monitored asset or laboratory test point.</p></div><span class="tag green">Baseline → latest capture</span></div>
+      <div class="sentinel-intro-grid">
+        <div class="sentinel-intro-card"><span class="sentinel-icon">⌁</span><div><strong>Frequency estimate</strong><span>Did the estimated oscillation frequency shift from the known baseline?</span></div></div>
+        <div class="sentinel-intro-card"><span class="sentinel-icon">∿</span><div><strong>Vibration amplitude</strong><span>Has the RMS acceleration level increased relative to baseline?</span></div></div>
+        <div class="sentinel-intro-card"><span class="sentinel-icon">♨</span><div><strong>Thermal condition</strong><span>Has the surface-to-ambient temperature lift increased?</span></div></div>
+      </div>
+
+      <div class="sentinel-workspace">
+        <div class="sentinel-workspace-head"><div><span class="eyebrow" style="color:#f1a477">LIVE COMPARISON CONSOLE</span><h2>Cross-signal condition screen</h2><p>Enter readings or import a pair of sensor captures. The tool applies your thresholds and explains each flag.</p></div><div class="sentinel-head-actions"><span class="sentinel-demo-pill" id="sentinelMode">NO DATA · READY</span><button class="button accent" id="sentinelDemo">Load pump demo</button></div></div>
+        <div class="sentinel-workspace-body">
+          <div class="sentinel-form-column">
+            <div class="sentinel-panel">
+              <div class="card-title"><h3>Asset identity</h3><span class="tag">Context</span></div>
+              <div class="form-grid" style="grid-template-columns:1.3fr 1fr">
+                <div class="field"><label for="assetName">Asset / test point</label><input id="assetName" type="text" placeholder="e.g. Cooling-water pump P-204"></div>
+                <div class="field"><label for="assetType">Asset family</label><select id="assetType"><option value="pump">Pump / motor</option><option value="fan">Fan / blower</option><option value="structure">Bridge / structure</option><option value="thermal">Thermal equipment</option><option value="other">Other test point</option></select></div>
+              </div>
+              <div class="field" style="margin-top:10px"><label for="assetLocation">Sensor location / notes</label><input id="assetLocation" type="text" placeholder="e.g. Drive-end bearing housing · horizontal axis"></div>
+            </div>
+            <div class="sentinel-panel">
+              <div class="card-title"><h3>Baseline vs latest readings</h3><span class="tag blue">Manual entry</span></div>
+              <div class="capture-labels"><span>BASELINE · REFERENCE STATE</span><span>LATEST · CURRENT STATE</span></div>
+              <div class="sentinel-data-grid">
+                <div class="sentinel-measure"><label for="freqBase">Frequency estimate (Hz)</label><div class="paired-inputs"><input id="freqBase" type="number" min="0.001" step="0.01" placeholder="24.0"><input id="freqNow" type="number" min="0.001" step="0.01" placeholder="27.1"></div></div>
+                <div class="sentinel-measure"><label for="rmsBase">RMS acceleration (g)</label><div class="paired-inputs"><input id="rmsBase" type="number" min="0.000001" step="0.001" placeholder="0.080"><input id="rmsNow" type="number" min="0.000001" step="0.001" placeholder="0.130"></div></div>
+                <div class="sentinel-measure"><label for="surfBase">Surface temperature (°C)</label><div class="paired-inputs"><input id="surfBase" type="number" step="0.1" placeholder="42.0"><input id="surfNow" type="number" step="0.1" placeholder="57.0"></div></div>
+                <div class="sentinel-measure"><label for="ambBase">Ambient temperature (°C)</label><div class="paired-inputs"><input id="ambBase" type="number" step="0.1" placeholder="25.0"><input id="ambNow" type="number" step="0.1" placeholder="27.0"></div></div>
+              </div>
+              <div class="csv-import-row">
+                <div><strong>Import sensor captures (CSV)</strong><small>Required headers: time_s, accel_g, surface_temp_c, ambient_temp_c. Use evenly sampled acceleration data with several vibration cycles.</small></div>
+                <div class="capture-imports"><label class="button small" for="sentinelBaseFile">↑ Baseline CSV</label><input id="sentinelBaseFile" type="file" accept=".csv,text/csv" hidden><label class="button small" for="sentinelNowFile">↑ Latest CSV</label><input id="sentinelNowFile" type="file" accept=".csv,text/csv" hidden></div>
+              </div>
+              <div class="small-note" id="sentinelImportStatus" aria-live="polite">CSV import estimates de-meaned RMS acceleration, a rising zero-crossing frequency estimate and mean temperatures. Use a stable capture with one dominant periodic component; this is not a full FFT spectrum. Check sensor units before importing.</div>
+            </div>
+            <div class="sentinel-panel">
+              <div class="card-title"><h3>Screening limits</h3><span class="tag gold">User-configured</span></div>
+              <p class="small-note">Set alert thresholds for this asset and operating condition. These are demonstration limits, not universal industry alarm values or ISO limits.</p>
+              <div class="form-grid sentinel-threshold-grid">
+                <div class="field"><label for="thFreq">Frequency shift trigger (%)</label><input id="thFreq" type="number" min="0.1" step="0.5" value="5"></div>
+                <div class="field"><label for="thRms">RMS increase trigger (%)</label><input id="thRms" type="number" min="0.1" step="1" value="50"></div>
+                <div class="field"><label for="thTemp">Thermal lift increase (°C)</label><input id="thTemp" type="number" min="0.1" step="0.5" value="8"></div>
+              </div>
+              <div class="form-actions"><button class="button primary" id="sentinelAnalyze">Analyse condition</button><button class="button" id="sentinelReport">Export report (JSON)</button><button class="button" id="sentinelTemplateBase">Baseline CSV</button><button class="button" id="sentinelTemplateNow">Latest CSV</button><button class="button subtle" id="sentinelClear">Clear values</button></div>
+            </div>
+          </div>
+          <div class="sentinel-results-column">
+            <div class="sentinel-result-card" id="sentinelResult" aria-live="polite">
+              <div class="sentinel-result-empty"><div class="empty-orbit">◎</div><span class="eyebrow">AWAITING MEASUREMENTS</span><h3>Build your first comparison</h3><p>Load the pump demo or enter both baseline and latest readings. The screen will show the three signal changes separately.</p></div>
+            </div>
+            <div class="sentinel-explain-card"><span class="tag orange">Why this is different</span><h3>Three signals. One evidence trail.</h3><p>Many simple dashboards show one number at a time. Sentinel places frequency drift, vibration growth and ambient-corrected thermal change side by side, then shows exactly which limits were crossed.</p><div class="sentinel-mini-flow"><span>Baseline</span><b>→</b><span>Compare</span><b>→</b><span>Review</span></div><small>It is a transparent screening aid, not an AI fault diagnosis or safety rating.</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">Convention demo · presenter cue</span><h2>Tell the story behind the signal</h2><p>Use the built-in pump scenario to show exactly how the Sentinel reaches its screening result.</p></div><span class="tag orange">Illustrative scenario</span></div>
+      <div class="grid two sentinel-demo-story">
+        <div class="card"><div class="card-title"><h3>Cooling-water pump P-204</h3><span class="tag">Simulated readings</span></div><div class="demo-change-row"><span>Frequency estimate</span><strong>24.0 → 27.1 Hz</strong><b>+12.9%</b></div><div class="demo-change-row"><span>RMS acceleration</span><strong>0.080 → 0.130 g</strong><b>+62.5%</b></div><div class="demo-change-row"><span>Surface-to-ambient lift</span><strong>17 → 30 °C</strong><b>+13.0 °C</b></div><div class="callout blue" style="margin-top:12px">With the example thresholds (5% frequency shift, 50% RMS rise and 8 °C thermal-lift increase), all three indicators cross their configured limits. The result is <strong>cross-signal review</strong>—not a statement that the pump has a particular fault.</div></div>
+        <div class="card dark"><span class="eyebrow" style="color:#f0a477">Suggested 60-second explanation</span><h3 style="margin-top:8px;color:#fff">What makes this feature useful?</h3><p>“In industry, a single sensor reading rarely tells the whole story. Our Asset Sentinel compares a machine’s current vibration frequency, vibration level and temperature rise against its own baseline. In this pump example, all three indicators move beyond the demonstration limits, so the software recommends a closer engineering review and lists what should be verified. It does not guess the fault. It makes the evidence and the next checks visible.”</p><p style="margin:0;color:#d0dbe4;font-size:10px;line-height:1.6">The unique idea is the transparent combination of motion and thermal evidence, with asset-specific thresholds and a saved review trail—not an opaque AI score.</p></div>
+      </div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">Where this can be useful</span><h2>Four industrial use cases</h2><p>The pendulum is a teaching model; the sensor types and structural models change when the idea is transferred to an actual asset.</p></div></div>
+      <div class="industry-use-grid">
+        <article class="industry-use-card"><div class="use-no">01 / ROTATING EQUIPMENT</div><div class="use-icon">⚙</div><h3>Pumps, motors & fans</h3><p>Condition-monitoring teams can trend vibration and temperature on bearings, casings and support structures. A growing vibration level or temperature rise can be a reason to inspect operating conditions and repeat the measurement.</p><div class="use-pair"><span><b>Typical inputs</b>Accelerometer · RTD / thermocouple · RPM / load context</span><span><b>What Sentinel adds</b>Baseline comparison across vibration and temperature, with a traceable flag explanation.</span></div></article>
+        <article class="industry-use-card"><div class="use-no">02 / CIVIL INFRASTRUCTURE</div><div class="use-icon">▤</div><h3>Bridges & buildings</h3><p>Structural monitoring uses instrumented measurements to understand how a structure responds to traffic, wind, temperature and other loads. Long-term trends matter more than a single isolated reading.</p><div class="use-pair"><span><b>Typical inputs</b>Accelerometers · strain gauges · tilt / displacement sensors</span><span><b>What this project teaches</b>Oscillation, period, damping concepts and the need to compare repeated measurements under comparable conditions.</span></div></article>
+        <article class="industry-use-card"><div class="use-no">03 / VIBRATION CONTROL</div><div class="use-icon">◉</div><h3>Tuned mass dampers</h3><p>A tuned mass damper uses an auxiliary mass and damping to reduce a structure’s response near selected vibration conditions. Pendulum-like dampers make the length–period relationship especially easy to demonstrate.</p><div class="use-pair"><span><b>Typical inputs</b>Building acceleration · damper travel · structural response</span><span><b>What to develop next</b>A coupled structure–damper model with stiffness, damping, forcing and tuning analysis.</span></div></article>
+        <article class="industry-use-card"><div class="use-no">04 / THERMAL SYSTEMS</div><div class="use-icon">♨</div><h3>Heat exchangers & cooling</h3><p>Cooling equipment and industrial enclosures are evaluated through temperature histories, ambient conditions, flow and load. Comparing a test object’s temperature with its surroundings helps separate ambient warming from a change in the object’s thermal behaviour.</p><div class="use-pair"><span><b>Typical inputs</b>Surface temperature · ambient temperature · airflow / process load</span><span><b>What this project teaches</b>Heat-release calculations and why motion or airflow can change cooling behaviour.</span></div></article>
+      </div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">A useful operational workflow</span><h2>How a real monitoring pilot would work</h2><p>Use a repeatable process rather than treating one unusual reading as proof of damage.</p></div><span class="tag blue">Concept architecture</span></div>
+      <div class="monitor-flow">
+        <div class="monitor-step"><span>01</span><b>Instrument the asset</b><p>Choose a suitable sensor, mounting point, axis, range and sampling rate for the asset and expected fault signatures.</p></div>
+        <div class="monitor-step"><span>02</span><b>Build a baseline</b><p>Capture readings when operating conditions are known and stable. Record speed, load, temperature and sensor metadata.</p></div>
+        <div class="monitor-step"><span>03</span><b>Check data quality</b><p>Confirm calibration, sensor attachment, sampling, missing data and repeatability before interpreting a trend.</p></div>
+        <div class="monitor-step"><span>04</span><b>Compare & trend</b><p>Review changes against asset-specific baselines and thresholds over time, not a generic universal score.</p></div>
+        <div class="monitor-step"><span>05</span><b>Verify the indication</b><p>Repeat the measurement and check operating state, environment and alternative explanations.</p></div>
+        <div class="monitor-step"><span>06</span><b>Engineer the action</b><p>A qualified person decides whether to inspect, test further, repair, or continue monitoring.</p></div>
+      </div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">How the project maps to engineering</span><h2>From classroom principle to field instrument</h2></div></div>
+      <div class="industry-mapping-table"><div class="mapping-row mapping-head"><span>Project module</span><span>Engineering principle</span><span>Industrial translation</span><span>What must be added</span></div>
+        <div class="mapping-row"><b>Physics</b><span>Period, natural frequency, gravity and damping</span><span>Vibration response, modal trends and inertial sensing</span><span>Calibrated accelerometers, sensor mounting, sampling and structural model</span></div>
+        <div class="mapping-row"><b>Chemistry</b><span>Heat released and cooling rate</span><span>Thermal trending on bearings, motors and process equipment</span><span>Ambient compensation, surface/contact sensors and validated thermal limits</span></div>
+        <div class="mapping-row"><b>Mathematics</b><span>Arc, chord and angle relationships</span><span>Displacement geometry, motion tracking and sensor placement</span><span>Asset-specific coordinates, calibration and uncertainty analysis</span></div>
+      </div>
+
+      <div class="grid two section-gap">
+        <div class="card"><div class="card-title"><h3>What the app can contribute now</h3><span class="tag green">Current prototype</span></div><ul class="industry-bullets"><li>Process manually recorded experimental values and calculate derived quantities.</li><li>Visualise pendulum motion, geometry and a thermal comparison in interactive 3D.</li><li>Compare a baseline with a later capture using transparent user-defined thresholds.</li><li>Import structured CSV sensor captures and export a screening report for review.</li><li>Keep a repeatable record for classroom experiments and proof-of-concept demonstrations.</li></ul></div>
+        <div class="card"><div class="card-title"><h3>What an industrial deployment still needs</h3><span class="tag gold">Required engineering work</span></div><ul class="industry-bullets"><li>Calibrated sensors, suitable mounting, known units, sampling rate and documented uncertainty.</li><li>Asset-specific baselines captured at comparable speed, load and environmental conditions.</li><li>Signal conditioning, filtering, validated frequency analysis and longer-term trending.</li><li>Thresholds selected and approved by reliability / structural engineers for each asset type.</li><li>Alarm governance, cybersecurity, sensor-health checks and a defined human response process.</li></ul></div>
+      </div>
+      <div class="callout warning section-gap"><strong>Convention-ready capability statement.</strong> SMART SHM is an educational analysis and condition-screening prototype. The Asset Sentinel uses user-entered or imported readings and transparent demonstration thresholds. It does not identify a specific fault, certify an asset as safe or unsafe, or replace inspection and engineering judgement. A field deployment would require validation and approval for the asset and measurement method.</div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">Standards-aware development</span><h2>Designed around a repeatable monitoring process</h2><p>ISO 17359:2018 provides general guidelines for setting up machine condition-monitoring programmes; ISO lists this edition as confirmed in 2023. SMART SHM is not certified to or compliant with that standard—the workflow below is an educational alignment, not a conformity claim.</p></div><a class="button small" href="https://www.iso.org/standard/71194.html" target="_blank" rel="noopener">View ISO 17359 ↗</a></div>
+      <div class="steps industry-steps"><div class="step"><div class="num">PLAN</div><h4>Know the asset</h4><p>Identify what is monitored, why it matters and which changes are meaningful.</p></div><div class="step"><div class="num">MEASURE</div><h4>Choose the signal</h4><p>Select sensors, locations, units and intervals that suit the asset.</p></div><div class="step"><div class="num">BASELINE</div><h4>Record normal</h4><p>Capture a representative operating state with metadata and data-quality checks.</p></div><div class="step"><div class="num">REVIEW</div><h4>Act on evidence</h4><p>Trend, compare, investigate, decide, and review the monitoring plan.</p></div></div>
+
+      <div class="industry-section-title"><div><span class="eyebrow">References for the convention</span><h2>Technical reading</h2></div></div>
+      <div class="card"><div class="source-list">
+        <a class="source-link" href="https://www.iso.org/standard/71194.html" target="_blank" rel="noopener"><span>ISO · ISO 17359:2018 — Condition monitoring and diagnostics of machines: general guidelines</span><span>↗</span></a>
+        <a class="source-link" href="https://www.fhwa.dot.gov/publications/research/infrastructure/structures/bridge/09040/002.cfm" target="_blank" rel="noopener"><span>FHWA · State of the Practice for Structural Health Monitoring of Bridge Substructures</span><span>↗</span></a>
+        <a class="source-link" href="https://infotechnology.fhwa.dot.gov/vibration-testing/" target="_blank" rel="noopener"><span>FHWA · Vibration testing of structural members</span><span>↗</span></a>
+        <a class="source-link" href="https://www.usgs.gov/faqs/seismometers-seismographs-seismograms-whats-difference-how-do-they-work" target="_blank" rel="noopener"><span>USGS · How seismometers and seismographs work</span><span>↗</span></a>
+        <a class="source-link" href="https://www.structuremag.org/article/dynamic-loading-solutions-in-taipei-101/" target="_blank" rel="noopener"><span>STRUCTURE Magazine · Dynamic loading solutions in Taipei 101</span><span>↗</span></a>
+        <a class="source-link" href="https://ntrs.nasa.gov/api/citations/20230013900/downloads/NASA%20Thermal%20Control%20Engineering%20Guidebook%20v4.pdf?attachment=true" target="_blank" rel="noopener"><span>NASA · Thermal Control Engineering Guidebook</span><span>↗</span></a>
+      </div><p class="small-note" style="margin:12px 0 0">References support the engineering context. They do not validate this application as an industrial instrument.</p></div>
+    </section>
+
+    <!-- SIX HATS -->
+    <section class="page" id="page-method">
+      <div class="page-head"><div><div class="eyebrow">Project reflection · convention preparation</div><h1>Six Thinking Hats</h1><p class="lead">Use these prompts to document how your team approached the investigation. Write your actual observations and decisions; the prompts are guides, not pre-written findings.</p></div><div class="head-actions"><button class="button" id="clearHats">Clear notes</button><button class="button accent" id="saveHats">Save notes</button></div></div>
+      <div class="hat-grid">
+        <div class="hat"><div class="hat-top"><span class="hat-dot white">W</span><div><h3>White Hat · Facts and data</h3><p>What did you measure or verify?</p></div></div><textarea id="hatWhite" placeholder="Record measured values, equations, sources and known information..."></textarea></div>
+        <div class="hat"><div class="hat-top"><span class="hat-dot red">R</span><div><h3>Red Hat · Feelings and reactions</h3><p>What concerns or first impressions did the team have?</p></div></div><textarea id="hatRed" placeholder="Record initial reactions, confidence, doubts or concerns..."></textarea></div>
+        <div class="hat"><div class="hat-top"><span class="hat-dot black">B</span><div><h3>Black Hat · Risks and limitations</h3><p>What could make the results unreliable?</p></div></div><textarea id="hatBlack" placeholder="Record sources of error, assumptions, safety concerns and limitations..."></textarea></div>
+        <div class="hat"><div class="hat-top"><span class="hat-dot yellow">Y</span><div><h3>Yellow Hat · Benefits and value</h3><p>What worked, and where could it be useful?</p></div></div><textarea id="hatYellow" placeholder="Record useful outcomes, strengths and possible practical value..."></textarea></div>
+        <div class="hat"><div class="hat-top"><span class="hat-dot green">G</span><div><h3>Green Hat · Ideas and alternatives</h3><p>What could be improved or tested next?</p></div></div><textarea id="hatGreen" placeholder="Record new experiments, design changes or future application ideas..."></textarea></div>
+        <div class="hat"><div class="hat-top"><span class="hat-dot bluehat">B</span><div><h3>Blue Hat · Process and decisions</h3><p>How did the team organise the work?</p></div></div><textarea id="hatBlue" placeholder="Record roles, sequence of decisions, how disagreements were resolved and next steps..."></textarea></div>
+      </div>
+      <div class="grid two section-gap"><div class="card"><h3>Convention presentation sequence</h3><ol class="small-note" style="padding-left:18px;line-height:1.9;margin-bottom:0"><li>Introduce the research question and pendulum setup.</li><li>Demonstrate the 3D model and explain its assumptions.</li><li>Present measured results for gravity, heat loss and geometry.</li><li>Connect each principle to the industry pathway.</li><li>Close with limitations, improvements and the team’s Six Hats reflection.</li></ol></div><div class="card"><h3>Before presenting</h3><ul class="small-note" style="padding-left:18px;line-height:1.9;margin-bottom:0"><li>Replace sample data with your actual experiment readings.</li><li>Check units and show how each result was calculated.</li><li>Explain unusual values rather than hiding them.</li><li>Distinguish a theoretical model from a measured result.</li><li>State clearly what the app does and does not do.</li></ul></div></div>
+      <p class="small-note" id="hatSaveStatus" style="margin-top:12px">Notes are stored in this browser when saved.</p>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="page-head"><div><div class="eyebrow">Personalise your workspace</div><h1>Settings</h1><p class="lead">Adjust the appearance, readability and performance of SMART SHM. Your preferences are saved on this device and applied the next time you open the app.</p></div><div class="head-actions"><button class="button" id="resetPreferences">Reset preferences</button></div></div>
+      <div class="settings-layout">
+        <div class="card settings-card">
+          <div class="settings-card-head"><div><span class="eyebrow">Appearance</span><h2>Theme & colour</h2><p class="small-note">Choose how the application looks. System follows your phone or computer appearance setting.</p></div><span class="settings-symbol">◐</span></div>
+          <div class="field"><label for="prefTheme">Colour mode</label><select id="prefTheme"><option value="system">System default</option><option value="light">Light mode</option><option value="dark">Dark mode</option></select><small id="themeStatus">Following your device appearance.</small></div>
+          <div class="field" style="margin-top:15px"><label for="prefAccent">Accent colour</label><select id="prefAccent"><option value="copper">Copper · original</option><option value="ocean">Ocean blue</option><option value="forest">Forest green</option><option value="violet">Violet</option></select></div>
+          <div class="accent-preview" aria-hidden="true"><span></span><span></span><span></span><span></span><small>Preview</small></div>
+        </div>
+        <div class="card settings-card">
+          <div class="settings-card-head"><div><span class="eyebrow">Readability</span><h2>Comfort & accessibility</h2><p class="small-note">Make controls easier to read and use on smaller touchscreens.</p></div><span class="settings-symbol">Aa</span></div>
+          <div class="field"><label for="prefTextSize">Text size</label><select id="prefTextSize"><option value="standard">Standard</option><option value="large">Larger text</option></select></div>
+          <label class="setting-toggle"><span><b>Larger touch targets</b><small>Make buttons and form controls easier to tap.</small></span><input type="checkbox" id="prefTouchTargets"></label>
+          <label class="setting-toggle"><span><b>Reduce interface motion</b><small>Reduce page transitions and decorative animations.</small></span><input type="checkbox" id="prefReduceMotion"></label>
+        </div>
+        <div class="card settings-card">
+          <div class="settings-card-head"><div><span class="eyebrow">Performance</span><h2>3D & chart quality</h2><p class="small-note">Choose a rendering profile based on your device battery and graphics performance.</p></div><span class="settings-symbol">◈</span></div>
+          <div class="field"><label for="prefQuality">Rendering profile</label><select id="prefQuality"><option value="balanced">Balanced · recommended</option><option value="high">High detail</option><option value="battery">Battery saver</option></select><small id="qualityStatus">Balanced rendering limits pixel density for smoother mobile performance.</small></div>
+          <div class="settings-info"><strong>Tip for phones</strong><p>Use Battery saver on older devices or when the phone becomes warm during long 3D demonstrations. The simulation and calculations remain the same; only drawing resolution changes.</p></div>
+        </div>
+        <div class="card settings-card">
+          <div class="settings-card-head"><div><span class="eyebrow">Mobile app support</span><h2>Using SMART SHM on a phone</h2><p class="small-note">This build is responsive and suitable for a mobile browser or an embedded Android/iOS WebView.</p></div><span class="settings-symbol">▣</span></div>
+          <div class="mobile-check-list"><div><span>✓</span><div><b>Touch-ready 3D</b><small>One finger to orbit; two fingers to zoom.</small></div></div><div><span>✓</span><div><b>Responsive layouts</b><small>Cards stack, forms resize and tables scroll within their own panels.</small></div></div><div><span>✓</span><div><b>Local project storage</b><small>Experiment data and preferences stay in the app's browser storage.</small></div></div><div><span>!</span><div><b>Packaging note</b><small>To publish as an installable Android/iOS app, wrap this HTML with a tool such as Capacitor. Native file saving/sharing may need a platform plugin; keep using Export data as a backup.</small></div></div></div>
+          <div class="callout blue" style="margin-top:14px"><strong>Important:</strong> A responsive HTML app is not automatically an APK or IPA. The application interface is mobile-compatible, but store installation and native permissions require a wrapper/build process.</div>
+        </div>
+      </div>
+      <div class="settings-save-row"><span id="preferencesStatus" class="small-note" role="status" aria-live="polite">Preferences are saved on this device.</span><button class="button accent" id="savePreferences">Save preferences</button></div>
+    </section>
+
+    <div class="footer"><span>SMART SHM · PENDULUM ENGINEERING LAB</span><span>Local-first HTML application · All calculations run in your browser</span></div>
+  </main>
+</div>
+<script>
+'use strict';
+// ---------- State and persistence ----------
+const STORAGE_KEY = 'smart-shm-pendulum-lab-v1';
+const state = {
+  physics: [], stationary: [], dynamic: [], geometry: [],
+  hatNotes: {white:'',red:'',black:'',yellow:'',green:'',blue:''},
+  settings: {}
+};
+function saveState(){
+  for(const id of ['pReference','pUnitNote','cMass','cHeat','cInitial','mLength','modelLength','modelAngle','modelMass','modelDamping','pVizLength','pVizAngle','chemVizAngle','chemAirflow','mVizAngle','assetName','assetType','assetLocation','freqBase','freqNow','rmsBase','rmsNow','surfBase','surfNow','ambBase','ambNow','thFreq','thRms','thTemp']){const el=document.getElementById(id);if(el)state.settings[id]=el.value;}
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));setStorageChip(true);setSaveStatus('All experiment data saved in this browser.');}
+  catch(err){setStorageChip(false);setSaveStatus('Browser storage is unavailable. Export your data to keep a copy.');}
+}
+function loadState(){
+  try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved&&typeof saved==='object'){
+    for(const key of ['physics','stationary','dynamic','geometry']) if(Array.isArray(saved[key])) state[key]=saved[key];
+    if(saved.hatNotes&&typeof saved.hatNotes==='object') state.hatNotes={...state.hatNotes,...saved.hatNotes};
+    if(saved.settings&&typeof saved.settings==='object') state.settings={...state.settings,...saved.settings};
+    for(const [id,value] of Object.entries(state.settings)){const el=document.getElementById(id);if(el&&typeof value==='string')el.value=value;}
+  }}catch(err){console.warn('Saved data could not be read.',err);}
+}
+function setSaveStatus(message){const el=document.getElementById('hatSaveStatus');if(el)el.textContent=message;}
+function setStorageChip(saved){const el=document.getElementById('storageChip');if(!el)return;if(saved){el.textContent='● LOCAL SESSION · SAVED';el.style.background='#e4f0eb';el.style.borderColor='#c9e1d7';el.style.color='#3c7665';}else{el.textContent='● SESSION · EXPORT TO KEEP';el.style.background='#fbf0e5';el.style.borderColor='#ead0b8';el.style.color='#9b5d32';}}
+function num(id){const raw=document.getElementById(id).value.trim();if(raw==='')return NaN;const v=Number(raw);return Number.isFinite(v)?v:NaN;}
+function fmt(v,d=2){return Number.isFinite(v)?v.toFixed(d):'—';}
+function escapeText(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function regression(x,y){
+  const n=x.length;if(n<2)return null;
+  const mx=x.reduce((a,b)=>a+b,0)/n,my=y.reduce((a,b)=>a+b,0)/n;
+  let sxx=0,sxy=0,syy=0;for(let i=0;i<n;i++){sxx+=(x[i]-mx)**2;sxy+=(x[i]-mx)*(y[i]-my);syy+=(y[i]-my)**2;}
+  if(Math.abs(sxx)<1e-12)return null;
+  const slope=sxy/sxx,intercept=my-slope*mx;let ssRes=0;
+  for(let i=0;i<n;i++)ssRes+=(y[i]-(slope*x[i]+intercept))**2;
+  const r2=syy>1e-12?Math.max(0,Math.min(1,1-ssRes/syy)):1;
+  return {slope,intercept,r2};
+}
+function makeTile(k,v,u=''){return `<div class="result-tile"><div class="k">${escapeText(k)}</div><div class="v">${escapeText(v)}</div><div class="u">${escapeText(u)}</div></div>`;}
+function csvDownload(filename,rows){
+  const csv=rows.map(row=>row.map(v=>{const s=String(v??'');return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+// ---------- Navigation ----------
+const pageNames={overview:'Overview',model:'3D Lab · all scenes',physics:'Physics · gravity',chemistry:'Chemistry · heat loss',mathematics:'Mathematics · geometry',industry:'Industry pathway',method:'Six Thinking Hats',settings:'Settings'};
+function showPage(name){
+  if(!pageNames[name])return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  document.getElementById('crumbCurrent').textContent=pageNames[name];window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='physics'&&document.getElementById('physicsResults').classList.contains('show'))drawPhysicsChart();
+  if(name==='chemistry'&&document.getElementById('chemResults').classList.contains('show'))drawChemChart();
+  if(name==='mathematics'&&document.getElementById('mathResults').classList.contains('show'))drawMathChart();
+  if(name==='model')setModelTab(activeModelTab);
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));
+document.getElementById('printPage').addEventListener('click',()=>window.print());
+document.getElementById('quickSettings').addEventListener('click',()=>showPage('settings'));
+
+// ---------- Appearance, accessibility and mobile performance preferences ----------
+const UI_PREF_KEY='smartshm-ui-preferences-v1';
+const DEFAULT_UI_PREFS={theme:'system',accent:'copper',textSize:'standard',reduceMotion:false,touchTargets:false,quality:'balanced'};
+let uiPreferences={...DEFAULT_UI_PREFS};
+const ACCENT_PALETTES={
+  copper:{accent:'#e07842',accent2:'#f3a16f',blue:'#2d7190',teal:'#237d78',soft:'#fbefe7'},
+  ocean:{accent:'#287da7',accent2:'#69b5d0',blue:'#356f9a',teal:'#2b8d91',soft:'#e8f3f8'},
+  forest:{accent:'#398264',accent2:'#83b99b',blue:'#3f7e91',teal:'#348a78',soft:'#e8f3ed'},
+  violet:{accent:'#8068bd',accent2:'#b1a0df',blue:'#5674ad',teal:'#478c91',soft:'#f0ecf8'}
+};
+function getRenderDpr(){const cap=uiPreferences.quality==='battery'?1:(uiPreferences.quality==='high'?2.5:1.5);return Math.min(window.devicePixelRatio||1,cap);}
+function effectiveTheme(choice){if(choice==='system'||!choice){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}return choice;}
+function applyUIPreferences(prefs=uiPreferences){
+  uiPreferences={...DEFAULT_UI_PREFS,...prefs};
+  const root=document.documentElement,theme=effectiveTheme(uiPreferences.theme);
+  root.dataset.theme=theme;root.dataset.themeChoice=uiPreferences.theme;root.dataset.textSize=uiPreferences.textSize;
+  root.classList.toggle('reduce-motion',!!uiPreferences.reduceMotion);root.classList.toggle('large-tap-targets',!!uiPreferences.touchTargets);
+  const palette=ACCENT_PALETTES[uiPreferences.accent]||ACCENT_PALETTES.copper;
+  root.style.setProperty('--accent',palette.accent);root.style.setProperty('--accent-2',palette.accent2);root.style.setProperty('--blue',palette.blue);root.style.setProperty('--teal',palette.teal);root.style.setProperty('--soft-accent',palette.soft);
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='dark'?'#101923':'#111c2b';
+  const themeStatus=document.getElementById('themeStatus');if(themeStatus)themeStatus.textContent=uiPreferences.theme==='system'?`Following device appearance · currently ${theme} mode.`:`${theme==='dark'?'Dark':'Light'} mode is selected.`;
+  const qualityStatus=document.getElementById('qualityStatus');if(qualityStatus)qualityStatus.textContent=uiPreferences.quality==='battery'?'Battery saver uses lower canvas resolution to reduce graphics workload.':uiPreferences.quality==='high'?'High detail uses up to 2.5× device pixel ratio where available.':'Balanced rendering limits pixel density for smoother mobile performance.';
+  // Redraw every canvas using the selected pixel-density profile.
+  if(typeof redrawAllVisuals==='function')redrawAllVisuals();
+}
+function readPreferenceControls(){return {theme:document.getElementById('prefTheme').value,accent:document.getElementById('prefAccent').value,textSize:document.getElementById('prefTextSize').value,reduceMotion:document.getElementById('prefReduceMotion').checked,touchTargets:document.getElementById('prefTouchTargets').checked,quality:document.getElementById('prefQuality').value};}
+function syncPreferenceControls(){document.getElementById('prefTheme').value=uiPreferences.theme;document.getElementById('prefAccent').value=uiPreferences.accent;document.getElementById('prefTextSize').value=uiPreferences.textSize;document.getElementById('prefReduceMotion').checked=!!uiPreferences.reduceMotion;document.getElementById('prefTouchTargets').checked=!!uiPreferences.touchTargets;document.getElementById('prefQuality').value=uiPreferences.quality;}
+function persistUIPreferences(showMessage=true){
+  if(document.getElementById('prefTheme'))uiPreferences=readPreferenceControls();
+  state.settings.uiTheme=uiPreferences.theme;state.settings.uiAccent=uiPreferences.accent;state.settings.uiTextSize=uiPreferences.textSize;state.settings.uiReduceMotion=String(!!uiPreferences.reduceMotion);state.settings.uiTouchTargets=String(!!uiPreferences.touchTargets);state.settings.uiQuality=uiPreferences.quality;
+  let stored=true;try{localStorage.setItem(UI_PREF_KEY,JSON.stringify(uiPreferences));}catch(e){stored=false;}
+  applyUIPreferences();const status=document.getElementById('preferencesStatus');if(status)status.textContent=stored?'Saved on this device. Your preferences will be used next time.':'Preferences applied for this session, but browser storage is unavailable. Export a project backup before closing.';
+}
+function applyImportedUIPreferences(){
+  const v=state.settings||{};uiPreferences={...DEFAULT_UI_PREFS,theme:v.uiTheme||uiPreferences.theme,accent:v.uiAccent||uiPreferences.accent,textSize:v.uiTextSize||uiPreferences.textSize,reduceMotion:v.uiReduceMotion===undefined?uiPreferences.reduceMotion:v.uiReduceMotion==='true',touchTargets:v.uiTouchTargets===undefined?uiPreferences.touchTargets:v.uiTouchTargets==='true',quality:v.uiQuality||uiPreferences.quality};
+  syncPreferenceControls();persistUIPreferences(false);
+}
+function initUIPreferences(){
+  try{const saved=JSON.parse(localStorage.getItem(UI_PREF_KEY)||'null');if(saved&&typeof saved==='object')uiPreferences={...DEFAULT_UI_PREFS,...saved};else if(state.settings.uiTheme){uiPreferences={...DEFAULT_UI_PREFS,theme:state.settings.uiTheme,accent:state.settings.uiAccent||'copper',textSize:state.settings.uiTextSize||'standard',reduceMotion:state.settings.uiReduceMotion==='true',touchTargets:state.settings.uiTouchTargets==='true',quality:state.settings.uiQuality||'balanced'};}}catch(e){}
+  syncPreferenceControls();persistUIPreferences(false);
+  ['prefTheme','prefAccent','prefTextSize','prefReduceMotion','prefTouchTargets','prefQuality'].forEach(id=>document.getElementById(id).addEventListener('change',()=>persistUIPreferences(true)));
+  document.getElementById('savePreferences').addEventListener('click',()=>persistUIPreferences(true));
+  document.getElementById('resetPreferences').addEventListener('click',()=>{uiPreferences={...DEFAULT_UI_PREFS};syncPreferenceControls();persistUIPreferences(true);});
+  if(window.matchMedia){const media=window.matchMedia('(prefers-color-scheme: dark)');const update=()=>{if(uiPreferences.theme==='system')applyUIPreferences();};if(media.addEventListener)media.addEventListener('change',update);else if(media.addListener)media.addListener(update);}
+}
+
+// ---------- Native canvas chart renderer ----------
+function drawChart(canvas,config){
+  if(!canvas)return;
+  const rect=canvas.getBoundingClientRect();const w=Math.max(260,rect.width),h=Math.max(190,rect.height),dpr=getRenderDpr();
+  canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  const all=config.series.flatMap(s=>s.points||[]).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
+  if(!all.length){ctx.fillStyle='#8290a0';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('No data available to plot',w/2,h/2);return;}
+  let xmin=Math.min(...all.map(p=>p.x)),xmax=Math.max(...all.map(p=>p.x)),ymin=Math.min(...all.map(p=>p.y)),ymax=Math.max(...all.map(p=>p.y));
+  if(xmin===xmax){xmin-=1;xmax+=1;}if(ymin===ymax){ymin-=1;ymax+=1;}
+  const xp=(xmax-xmin)*.09,yp=(ymax-ymin)*.15;xmin-=xp;xmax+=xp;ymin-=yp;ymax+=yp;
+  const pad={l:58,r:18,t:21,b:51},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
+  const X=x=>pad.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>pad.t+ph-(y-ymin)/(ymax-ymin)*ph;
+  ctx.font='10px system-ui';ctx.lineWidth=1;ctx.strokeStyle='#e8edf1';ctx.fillStyle='#8290a0';ctx.textAlign='right';ctx.textBaseline='middle';
+  for(let i=0;i<=4;i++){const y=ymin+(ymax-ymin)*i/4,py=Y(y);ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(w-pad.r,py);ctx.stroke();ctx.fillText(y.toFixed(config.yDecimals??2),pad.l-9,py);}
+  ctx.textAlign='center';ctx.textBaseline='top';for(let i=0;i<=4;i++){const x=xmin+(xmax-xmin)*i/4,px=X(x);ctx.beginPath();ctx.moveTo(px,pad.t);ctx.lineTo(px,pad.t+ph);ctx.stroke();ctx.fillText(x.toFixed(config.xDecimals??1),px,pad.t+ph+8);}
+  ctx.strokeStyle='#9aa7b4';ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+ph);ctx.lineTo(w-pad.r,pad.t+ph);ctx.stroke();
+  ctx.fillStyle='#536274';ctx.font='11px system-ui';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillText(config.xLabel||'',pad.l+pw/2,h-8);
+  ctx.save();ctx.translate(13,pad.t+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(config.yLabel||'',0,0);ctx.restore();
+  config.series.forEach(s=>{
+    if(s.fit){ctx.strokeStyle=s.fitColor||s.color;ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(X(s.fit.x1),Y(s.fit.y1));ctx.lineTo(X(s.fit.x2),Y(s.fit.y2));ctx.stroke();ctx.setLineDash([]);}
+    if(s.line&&s.points.length>1){ctx.strokeStyle=s.color;ctx.lineWidth=2;ctx.beginPath();s.points.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke();}
+    if(s.points){s.points.forEach(p=>{ctx.beginPath();ctx.fillStyle=s.color;ctx.arc(X(p.x),Y(p.y),s.radius||4,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.2;ctx.stroke();});}
+  });
+  const entries=config.series.filter(s=>s.label);let lx=pad.l,ly=pad.t-9;ctx.font='10px system-ui';ctx.textAlign='left';ctx.textBaseline='middle';
+  entries.forEach(s=>{const tw=ctx.measureText(s.label).width; if(lx+tw+25>w-pad.r){lx=pad.l;ly-=14;}ctx.fillStyle=s.color;ctx.fillRect(lx,ly-4,8,8);ctx.fillStyle='#5e6c7d';ctx.fillText(s.label,lx+13,ly);lx+=tw+28;});
+}
+
+// ---------- Physics module ----------
+function renderPhysics(){
+  document.getElementById('physicsResults').classList.remove('show');
+  const body=document.getElementById('physicsRows');document.getElementById('physicsCount').textContent=`${state.physics.length} reading${state.physics.length===1?'':'s'}`;
+  body.innerHTML=state.physics.length?state.physics.map((r,i)=>{const T=r.time/r.count;return `<tr><td>${fmt(r.length,1)}</td><td>${fmt(r.time,2)}</td><td>${r.count}</td><td>${fmt(T,4)}</td><td>${fmt(T*T,5)}</td><td><button class="delete-row" data-del-physics="${i}" aria-label="Delete physics row ${i+1}">×</button></td></tr>`;}).join(''):'<tr><td colspan="6" class="empty-row">No readings yet. Add a measurement or load the sample set.</td></tr>';
+  body.querySelectorAll('[data-del-physics]').forEach(b=>b.addEventListener('click',()=>{state.physics.splice(Number(b.dataset.delPhysics),1);saveState();renderPhysics();}));
+}
+function addPhysics(){const length=num('pLength'),time=num('pTime'),count=num('pCount');if(!(length>0&&time>0&&count>0&&Number.isInteger(count))){alert('Enter a positive length, a positive total time and a whole-number oscillation count.');return;}state.physics.push({length,time,count});state.physics.sort((a,b)=>a.length-b.length);['pLength','pTime'].forEach(id=>document.getElementById(id).value='');saveState();renderPhysics();}
+function physicsAnalysis(){
+  if(state.physics.length<2){alert('Add at least two measurements with different pendulum lengths before calculating g.');return null;}
+  const points=state.physics.map(r=>({L:r.length/100,T:r.time/r.count,T2:(r.time/r.count)**2}));const fit=regression(points.map(p=>p.L),points.map(p=>p.T2));
+  if(!fit||fit.slope<=0){alert('The T²–length relationship has no positive, usable gradient. Check your measurements and units.');return null;}
+  const g=4*Math.PI*Math.PI/fit.slope,reference=num('pReference');if(!(reference>0)){alert('Enter a positive reference value for g.');return null;}
+  const error=Math.abs(g-reference)/reference*100;const meanG=points.reduce((s,p)=>s+4*Math.PI*Math.PI*p.L/p.T2,0)/points.length;
+  return {points,fit,g,reference,error,meanG};
+}
+function drawPhysicsChart(){const a=physicsAnalysisSilent();if(!a)return;drawChart(document.getElementById('physicsChart'),{xLabel:'Pendulum length, L (m)',yLabel:'Period squared, T² (s²)',xDecimals:2,yDecimals:2,series:[{label:'Measured T²',color:'#2d7190',points:a.points.map(p=>({x:p.L,y:p.T2}))},{label:'Linear fit',color:'#e07842',points:[],fit:{x1:Math.min(...a.points.map(p=>p.L)),x2:Math.max(...a.points.map(p=>p.L)),y1:a.fit.slope*Math.min(...a.points.map(p=>p.L))+a.fit.intercept,y2:a.fit.slope*Math.max(...a.points.map(p=>p.L))+a.fit.intercept}}]});}
+function physicsAnalysisSilent(){if(state.physics.length<2)return null;const points=state.physics.map(r=>({L:r.length/100,T:r.time/r.count,T2:(r.time/r.count)**2}));const fit=regression(points.map(p=>p.L),points.map(p=>p.T2));if(!fit||fit.slope<=0)return null;const g=4*Math.PI*Math.PI/fit.slope,reference=Number(document.getElementById('pReference').value)||9.81;return {points,fit,g,reference,error:Math.abs(g-reference)/reference*100,meanG:points.reduce((s,p)=>s+4*Math.PI*Math.PI*p.L/p.T2,0)/points.length};}
+function calculatePhysics(){const a=physicsAnalysis();if(!a)return;document.getElementById('physicsResults').classList.add('show');document.getElementById('physicsTiles').innerHTML=[makeTile('Experimental g',fmt(a.g,3),'m/s²'),makeTile('Reference g',fmt(a.reference,3),'m/s²'),makeTile('Percentage error',fmt(a.error,2),'%'),makeTile('Gradient',fmt(a.fit.slope,4),'s²/m'),makeTile('Regression R²',fmt(a.fit.r2,4),'fit quality'),makeTile('Mean pointwise g',fmt(a.meanG,3),'m/s²')].join('');document.getElementById('physicsInterpretation').innerHTML=`The fitted relationship is <strong>T² = ${fmt(a.fit.slope,4)}L ${a.fit.intercept>=0?'+':'−'} ${fmt(Math.abs(a.fit.intercept),4)}</strong> (L in metres). The corresponding experimental estimate is <strong>${fmt(a.g,3)} m/s²</strong>, which differs from the selected reference by <strong>${fmt(a.error,2)}%</strong>. A non-zero intercept can indicate a length zero-offset or other systematic effects. R² describes the straight-line fit; it does not by itself prove that the measurements are accurate.`;drawPhysicsChart();saveState();}
+function physicsSample(){state.physics=[{length:20,time:19.12,count:20},{length:30,time:23.11,count:20},{length:40,time:26.49,count:20},{length:50,time:29.50,count:20},{length:60,time:32.09,count:20},{length:70,time:34.54,count:20}];renderPhysics();saveState();document.getElementById('physicsResults').classList.remove('show');}
+function exportPhysics(){const rows=[['Length_cm','Total_time_s','Oscillations','Period_s','Period_squared_s2'],...state.physics.map(r=>[r.length,r.time,r.count,r.time/r.count,(r.time/r.count)**2])];csvDownload('smart-shm-physics-data.csv',rows);}
+document.getElementById('addPhysics').addEventListener('click',addPhysics);document.getElementById('calcPhysics').addEventListener('click',calculatePhysics);document.getElementById('physicsSample').addEventListener('click',physicsSample);document.getElementById('physicsClear').addEventListener('click',()=>{if(confirm('Clear all physics measurements?')){state.physics=[];saveState();renderPhysics();document.getElementById('physicsResults').classList.remove('show');}});document.getElementById('exportPhysics').addEventListener('click',exportPhysics);
+
+// ---------- Chemistry module ----------
+function chemProps(){return {mass:num('cMass'),heat:num('cHeat'),initial:num('cInitial')};}
+function heatQ(temp){const p=chemProps();return p.mass*p.heat*(p.initial-temp);}
+function renderThermalRows(){
+  document.getElementById('chemResults').classList.remove('show');
+  for(const [key,id] of [['stationary','staticRows'],['dynamic','dynamicRows']]){
+    const body=document.getElementById(id);body.innerHTML=state[key].length?state[key].map((r,i)=>`<tr><td>${fmt(r.time,1)}</td><td>${fmt(r.temp,1)}</td><td>${fmt(heatQ(r.temp),1)}</td><td><button class="delete-row" data-del-${key}="${i}" aria-label="Delete ${key} reading ${i+1}">×</button></td></tr>`).join(''):`<tr><td colspan="4" class="empty-row">No readings</td></tr>`;
+    body.querySelectorAll(`[data-del-${key}]`).forEach(b=>b.addEventListener('click',()=>{state[key].splice(Number(b.dataset['del'+key[0].toUpperCase()+key.slice(1)]),1);saveState();renderThermalRows();}));
+  }
+  if(typeof drawChemViz==='function')drawChemViz();
+}
+function addThermal(key,timeId,tempId){const time=num(timeId),temp=num(tempId),p=chemProps();if(!(time>=0&&Number.isFinite(temp)&&p.mass>0&&p.heat>0&&Number.isFinite(p.initial))){alert('Enter a valid time, temperature, mass, specific heat capacity and initial temperature.');return;}if(temp>p.initial){const ok=confirm('This reading is above the stated initial temperature, so calculated heat released will be negative. Add it anyway?');if(!ok)return;}state[key].push({time,temp});state[key].sort((a,b)=>a.time-b.time);document.getElementById(timeId).value='';document.getElementById(tempId).value='';saveState();renderThermalRows();}
+function thermalFit(rows){if(rows.length<2)return null;const p=chemProps();const q=rows.map(r=>p.mass*p.heat*(p.initial-r.temp));const fit=regression(rows.map(r=>r.time),q);return fit;}
+function drawChemChart(){const s=state.stationary,d=state.dynamic;drawChart(document.getElementById('chemChart'),{xLabel:'Elapsed time (s)',yLabel:'Temperature (°C)',xDecimals:0,yDecimals:1,series:[{label:'Stationary bob',color:'#2d7190',line:true,points:s.map(r=>({x:r.time,y:r.temp}))},{label:'Swinging bob',color:'#e07842',line:true,points:d.map(r=>({x:r.time,y:r.temp}))}]});}
+function calculateChem(){const p=chemProps();if(!(p.mass>0&&p.heat>0&&Number.isFinite(p.initial))){alert('Check the bob properties. Mass and specific heat capacity must be positive.');return;}if(state.stationary.length<2||state.dynamic.length<2){alert('Add at least two temperature readings for both the stationary and swinging bob.');return;}const fs=thermalFit(state.stationary),fd=thermalFit(state.dynamic);if(!fs||!fd){alert('The time values do not allow a valid regression.');return;}const rs=fs.slope,rd=fd.slope,ratio=rs>0?rd/rs:NaN;const qS=state.stationary.map(r=>p.mass*p.heat*(p.initial-r.temp)),qD=state.dynamic.map(r=>p.mass*p.heat*(p.initial-r.temp));document.getElementById('chemResults').classList.add('show');document.getElementById('chemTiles').innerHTML=[makeTile('Stationary rate',fmt(rs,3),'W · regression slope'),makeTile('Swinging rate',fmt(rd,3),'W · regression slope'),makeTile('Rate ratio',fmt(ratio,2),'× · swinging / stationary'),makeTile('Final static Q',fmt(qS[qS.length-1],1),'J · latest time point'),makeTile('Final dynamic Q',fmt(qD[qD.length-1],1),'J · latest time point'),makeTile('Rate difference',fmt(rd-rs,3),'W · dynamic minus static')].join('');let interpretation='';if(rs>0&&rd>0){interpretation=`The regression-based heat-release rate is <strong>${fmt(rd,3)} W</strong> for the swinging bob and <strong>${fmt(rs,3)} W</strong> for the stationary bob. The swinging-to-stationary rate ratio is <strong>${fmt(ratio,2)}×</strong>.`;}else{interpretation=`At least one fitted slope is zero or negative. Check the temperature readings and the test conditions before describing either result as a cooling rate.`;}document.getElementById('chemInterpretation').innerHTML=interpretation+' The calculation uses Q = mc(T₀ − T); the slope of Q against time is the average rate over the measured interval. This is a comparison of the supplied data, not a complete heat-transfer model.';drawChemChart();saveState();}
+function chemSample(){document.getElementById('cMass').value='0.060';document.getElementById('cHeat').value='450';document.getElementById('cInitial').value='60';state.stationary=[{time:0,temp:60},{time:20,temp:56.6},{time:40,temp:53.0},{time:60,temp:50.0},{time:80,temp:46.6},{time:100,temp:45.2}];state.dynamic=[{time:0,temp:60},{time:20,temp:46.7},{time:40,temp:45.2},{time:60,temp:36.6},{time:80,temp:36.0},{time:100,temp:33.7}];renderThermalRows();saveState();document.getElementById('chemResults').classList.remove('show');}
+function exportChem(){const p=chemProps();const rows=[['Condition','Time_s','Temperature_C','Heat_released_J'],...state.stationary.map(r=>['Stationary',r.time,r.temp,p.mass*p.heat*(p.initial-r.temp)]),...state.dynamic.map(r=>['Swinging',r.time,r.temp,p.mass*p.heat*(p.initial-r.temp)])];csvDownload('smart-shm-thermal-data.csv',rows);}
+['cMass','cHeat','cInitial'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{renderThermalRows();saveState();}));
+document.getElementById('addStatic').addEventListener('click',()=>addThermal('stationary','sTime','sTemp'));document.getElementById('addDynamic').addEventListener('click',()=>addThermal('dynamic','dTime','dTemp'));document.getElementById('calcChem').addEventListener('click',calculateChem);document.getElementById('chemSample').addEventListener('click',chemSample);document.getElementById('chemClear').addEventListener('click',()=>{if(confirm('Clear all thermal readings?')){state.stationary=[];state.dynamic=[];saveState();renderThermalRows();document.getElementById('chemResults').classList.remove('show');}});document.getElementById('exportChem').addEventListener('click',exportChem);
+
+// ---------- Mathematics module ----------
+function geometryRecord(angle,length,measuredArc=null,measuredChord=null){const rad=angle*Math.PI/180;const arc=2*length*rad,chord=2*length*Math.sin(rad),gap=arc-chord;return {angle,length,arc,chord,gap,gapPct:arc>0?gap/arc*100:0,measuredArc,measuredChord};}
+function renderMath(){document.getElementById('mathResults').classList.remove('show');const body=document.getElementById('mathRows');document.getElementById('mathCount').textContent=`${state.geometry.length} angle${state.geometry.length===1?'':'s'}`;body.innerHTML=state.geometry.length?state.geometry.map((r,i)=>`<tr><td>${fmt(r.angle,1)}°</td><td>${fmt(r.arc,2)}</td><td>${fmt(r.chord,2)}</td><td>${fmt(r.gap,2)}</td><td>${fmt(r.gapPct,2)}%</td><td>${r.measuredArc==null?'—':fmt(r.measuredArc,2)}</td><td>${r.measuredChord==null?'—':fmt(r.measuredChord,2)}</td><td><button class="delete-row" data-del-math="${i}" aria-label="Delete angle ${i+1}">×</button></td></tr>`).join(''):'<tr><td colspan="8" class="empty-row">No angles recorded. Add an angle or load sample data.</td></tr>';body.querySelectorAll('[data-del-math]').forEach(b=>b.addEventListener('click',()=>{state.geometry.splice(Number(b.dataset.delMath),1);saveState();renderMath();}));}
+function addMath(){const length=num('mLength'),angle=num('mAngle'),ma=document.getElementById('mMeasuredArc').value.trim()===''?null:num('mMeasuredArc'),mc=document.getElementById('mMeasuredChord').value.trim()===''?null:num('mMeasuredChord');if(!(length>0&&angle>0&&angle<180)||(ma!==null&&!(ma>=0))||(mc!==null&&!(mc>=0))){alert('Enter a positive pendulum length and an angle between 0° and 180°. Optional measured distances must be non-negative.');return;}state.geometry.push(geometryRecord(angle,length,ma,mc));state.geometry.sort((a,b)=>a.angle-b.angle);document.getElementById('mAngle').value='';document.getElementById('mMeasuredArc').value='';document.getElementById('mMeasuredChord').value='';saveState();renderMath();}
+function drawMathChart(){drawChart(document.getElementById('mathChart'),{xLabel:'Release angle (°)',yLabel:'Distance (cm)',xDecimals:0,yDecimals:1,series:[{label:'Arc length',color:'#2d7190',line:true,points:state.geometry.map(r=>({x:r.angle,y:r.arc}))},{label:'Chord',color:'#e07842',line:true,points:state.geometry.map(r=>({x:r.angle,y:r.chord}))}]});}
+function calculateMath(){if(!state.geometry.length){alert('Add at least one angle before analysing the geometry.');return;}const max=state.geometry.reduce((a,b)=>b.gapPct>a.gapPct?b:a,state.geometry[0]),min=state.geometry.reduce((a,b)=>b.gapPct<a.gapPct?b:a,state.geometry[0]);const measured=state.geometry.filter(r=>r.measuredArc!==null&&r.measuredChord!==null);let measuredError='';if(measured.length){const mean=measured.reduce((s,r)=>s+(r.measuredArc-r.measuredChord),0)/measured.length;measuredError=makeTile('Mean measured gap',fmt(mean,2),'cm · entered values');}document.getElementById('mathResults').classList.add('show');document.getElementById('mathTiles').innerHTML=[makeTile('Angles tested',String(state.geometry.length),'data points'),makeTile('Largest relative gap',fmt(max.gapPct,2),'% at '+fmt(max.angle,1)+'°'),makeTile('Smallest relative gap',fmt(min.gapPct,2),'% at '+fmt(min.angle,1)+'°'),makeTile('Arc at largest angle',fmt(max.arc,2),'cm'),makeTile('Chord at largest angle',fmt(max.chord,2),'cm'),measuredError||makeTile('Measured comparisons','Not supplied','optional input')].join('');document.getElementById('mathInterpretation').innerHTML=`For a half-period, the bob travels from +θ to −θ, so the total angular path is 2θ. In this data set, the relative arc–chord gap is smallest at <strong>${fmt(min.angle,1)}°</strong> and largest at <strong>${fmt(max.angle,1)}°</strong>. The gap grows with amplitude, showing why the small-angle approximation is most appropriate for small release angles. Optional measured values can be used to discuss experimental deviation.`;drawMathChart();saveState();}
+function mathSample(){const length=Number(document.getElementById('mLength').value)||50;state.geometry=[10,20,30,40,50,60].map(angle=>geometryRecord(angle,length));renderMath();saveState();document.getElementById('mathResults').classList.remove('show');}
+function exportMath(){const rows=[['Length_cm','Angle_deg','Model_arc_cm','Model_chord_cm','Gap_cm','Gap_percent_of_arc','Measured_arc_cm','Measured_chord_cm'],...state.geometry.map(r=>[r.length,r.angle,r.arc,r.chord,r.gap,r.gapPct,r.measuredArc??'',r.measuredChord??''])];csvDownload('smart-shm-geometry-data.csv',rows);}
+document.getElementById('addMath').addEventListener('click',addMath);document.getElementById('calcMath').addEventListener('click',calculateMath);document.getElementById('mathSample').addEventListener('click',mathSample);document.getElementById('mathClear').addEventListener('click',()=>{if(confirm('Clear all geometry readings?')){state.geometry=[];saveState();renderMath();document.getElementById('mathResults').classList.remove('show');}});document.getElementById('exportMath').addEventListener('click',exportMath);
+
+// ---------- Six Thinking Hats ----------
+function renderHats(){for(const key of Object.keys(state.hatNotes)){const el=document.getElementById('hat'+key[0].toUpperCase()+key.slice(1));if(el)el.value=state.hatNotes[key]||'';}}
+for(const key of Object.keys(state.hatNotes)){const id='hat'+key[0].toUpperCase()+key.slice(1);document.getElementById(id).addEventListener('input',e=>{state.hatNotes[key]=e.target.value;});}
+document.getElementById('saveHats').addEventListener('click',()=>{for(const key of Object.keys(state.hatNotes)){const id='hat'+key[0].toUpperCase()+key.slice(1);state.hatNotes[key]=document.getElementById(id).value;}saveState();setSaveStatus('Six Thinking Hats notes saved in this browser.');});
+document.getElementById('clearHats').addEventListener('click',()=>{if(confirm('Clear all Six Thinking Hats notes?')){for(const key of Object.keys(state.hatNotes))state.hatNotes[key]='';renderHats();saveState();}});
+
+// ---------- Export whole project backup ----------
+function exportAll(){for(const key of Object.keys(state.hatNotes)){const id='hat'+key[0].toUpperCase()+key.slice(1);state.hatNotes[key]=document.getElementById(id).value;}persistUIPreferences(false);saveState();const blob=new Blob([JSON.stringify({application:'SMART SHM Pendulum Engineering Lab',exportedAt:new Date().toISOString(),data:state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='smart-shm-project-backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);saveState();}
+document.getElementById('exportAll').addEventListener('click',exportAll);
+document.getElementById('importButton').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',async e=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  try{
+    const payload=JSON.parse(await file.text());const incoming=payload&&payload.data;
+    if(!incoming||typeof incoming!=='object')throw new Error('This file is not a SMART SHM backup.');
+    const numericRows=(arr,keys)=>Array.isArray(arr)?arr.filter(r=>r&&keys.every(k=>Number.isFinite(Number(r[k])))).map(r=>({...r})):[];
+    state.physics=numericRows(incoming.physics,['length','time','count']);
+    state.stationary=numericRows(incoming.stationary,['time','temp']);
+    state.dynamic=numericRows(incoming.dynamic,['time','temp']);
+    state.geometry=Array.isArray(incoming.geometry)?incoming.geometry.filter(r=>r&&['angle','length','arc','chord','gap','gapPct'].every(k=>Number.isFinite(Number(r[k])))).map(r=>({...r,measuredArc:r.measuredArc==null?null:Number(r.measuredArc),measuredChord:r.measuredChord==null?null:Number(r.measuredChord)})):[];
+    if(incoming.hatNotes&&typeof incoming.hatNotes==='object')for(const key of Object.keys(state.hatNotes))state.hatNotes[key]=typeof incoming.hatNotes[key]==='string'?incoming.hatNotes[key]:'';
+    if(incoming.settings&&typeof incoming.settings==='object')state.settings={...incoming.settings};
+    for(const [id,value] of Object.entries(state.settings)){const el=document.getElementById(id);if(el&&typeof value==='string')el.value=value;}
+    renderPhysics();renderThermalRows();renderMath();renderHats();applyImportedUIPreferences();syncModel();const sentinelAfterImport=sentinelCalc(false);renderSentinel(sentinelAfterImport);sentinelSetMode(sentinelAfterImport?'IMPORTED · LOCAL DATA':'NO DATA · READY');saveState();
+    alert('Backup imported. The readings and notes are now available in this browser.');
+  }catch(err){alert('Unable to import this file. Choose a JSON backup exported by SMART SHM.');console.error(err);}
+  finally{e.target.value='';}
+});
+
+// ---------- Interactive 3D canvas renderer ----------
+const mainCanvas=document.getElementById('mainCanvas'),heroCanvas=document.getElementById('heroCanvas');
+const model={length:.50,angle:24*Math.PI/180,mass:60,damping:.02,theta:24*Math.PI/180,omega:0,running:false,last:0,yaw:-.35,pitch:.16,zoom:5.6,trail:true,ghosts:true,trailPoints:[]};
+function modelPeriod(){const a=Math.abs(model.angle),base=2*Math.PI*Math.sqrt(model.length/9.81);const corr=1+a*a/16+11*Math.pow(a,4)/3072;return base*corr;}
+function screenProject(p,canvas,cam){const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw),cx=Math.cos(cam.pitch),sx=Math.sin(cam.pitch);const x=p.x*cy-p.z*sy,z0=p.x*sy+p.z*cy,y=p.y*cx-z0*sx,z=p.y*sx+z0*cx;const depth=cam.zoom-z;const f=cam.scale/depth;return {x:canvas.width/2+x*f,y:canvas.height*.55-y*f,z};}
+function draw3D(canvas,cam,theta,opts={}){
+  if(!canvas||!canvas.isConnected)return;const rect=canvas.getBoundingClientRect();const dpr=getRenderDpr();const w=Math.max(260,rect.width),h=Math.max(180,rect.height);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  // Scale remains tied to the actual CSS dimensions; the perspective geometry is fully 3D and orbitable.
+  const camera={yaw:cam.yaw,pitch:cam.pitch,zoom:cam.zoom,scale:Math.min(w,h)*1.12};const cx=w/2,cy=h*.58;
+  const project=p=>{const cY=Math.cos(camera.yaw),sY=Math.sin(camera.yaw),cX=Math.cos(camera.pitch),sX=Math.sin(camera.pitch);const x=p.x*cY-p.z*sY,z0=p.x*sY+p.z*cY,y=p.y*cX-z0*sX,z=p.y*sX+z0*cX;const depth=camera.zoom-z;const f=camera.scale/depth;return {x:cx+x*f,y:cy-y*f,z};};
+  const line=(a,b,color,width=2,dash=[])=>{const A=project(a),B=project(b);ctx.beginPath();ctx.setLineDash(dash);ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();ctx.setLineDash([]);};
+  const point=(p,r,color)=>{const P=project(p);ctx.beginPath();ctx.arc(P.x,P.y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();};
+  // Floor grid, sorted and drawn first.
+  for(let i=-4;i<=4;i++){const off=i*.35;line({x:off,y:-.55,z:-1.7},{x:off,y:-.55,z:1.7},'rgba(185,204,220,.13)',1);line({x:-1.7,y:-.55,z:off},{x:1.7,y:-.55,z:off},'rgba(185,204,220,.13)',1);}
+  // Base and support frame.
+  line({x:-.58,y:-.55,z:-.16},{x:.58,y:-.55,z:-.16},'#72869b',5);
+  line({x:-.58,y:-.55,z:.36},{x:.58,y:-.55,z:.36},'#72869b',5);
+  line({x:-.58,y:-.55,z:-.16},{x:-.58,y:-.55,z:.36},'#72869b',4);
+  line({x:.58,y:-.55,z:-.16},{x:.58,y:-.55,z:.36},'#72869b',4);
+  line({x:-.47,y:-.55,z:-.16},{x:-.16,y:1.72,z:-.16},'#9aabba',5);
+  line({x:.47,y:-.55,z:-.16},{x:.16,y:1.72,z:-.16},'#9aabba',5);
+  line({x:-.47,y:-.55,z:.36},{x:-.16,y:1.72,z:.36},'#72869b',4);
+  line({x:.47,y:-.55,z:.36},{x:.16,y:1.72,z:.36},'#72869b',4);
+  line({x:-.16,y:1.72,z:-.16},{x:.16,y:1.72,z:-.16},'#b3c1ce',5);
+  line({x:-.16,y:1.72,z:.36},{x:.16,y:1.72,z:.36},'#8799ab',4);
+  line({x:0,y:1.72,z:-.16},{x:0,y:1.72,z:.36},'#d1dbe5',4);
+  line({x:-.05,y:1.68,z:-.16},{x:.05,y:1.68,z:-.16},'#d1dbe5',3);
+  const pivot={x:0,y:1.64,z:0};const lenVisual=1.18+(model.length-.25)/.95*.82;const bob={x:lenVisual*Math.sin(theta),y:1.64-lenVisual*Math.cos(theta),z:0};
+  // Arc path in swing plane.
+  if(opts.trail){ctx.beginPath();for(let i=0;i<=80;i++){const a=-model.angle+2*model.angle*i/80;const p=project({x:lenVisual*Math.sin(a),y:1.64-lenVisual*Math.cos(a),z:0});if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}ctx.strokeStyle='rgba(227,139,92,.7)';ctx.lineWidth=2;ctx.setLineDash([4,5]);ctx.stroke();ctx.setLineDash([]);}
+  if(opts.ghosts){[-model.angle,model.angle].forEach(a=>{const g=project({x:lenVisual*Math.sin(a),y:1.64-lenVisual*Math.cos(a),z:0});ctx.beginPath();ctx.arc(g.x,g.y,Math.max(5,model.mass*.14),0,Math.PI*2);ctx.strokeStyle='rgba(220,231,241,.5)';ctx.setLineDash([3,4]);ctx.lineWidth=1.3;ctx.stroke();ctx.setLineDash([]);});}
+  // Rod, bob and highlight.
+  line(pivot,bob,'#d2dce6',Math.max(2,model.mass/48));point(pivot,5,'#f2a16f');
+  const bp=project(bob),radius=8+model.mass*.075;const grad=ctx.createRadialGradient(bp.x-radius*.35,bp.y-radius*.4,2,bp.x,bp.y,radius*1.2);grad.addColorStop(0,'#fff0d9');grad.addColorStop(.25,'#e89a65');grad.addColorStop(.72,'#b95c39');grad.addColorStop(1,'#633a37');ctx.beginPath();ctx.arc(bp.x,bp.y,radius,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle='rgba(255,255,255,.48)';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.beginPath();ctx.arc(bp.x-radius*.27,bp.y-radius*.32,Math.max(2,radius*.16),0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.72)';ctx.fill();
+  // Reference vertical and swing-angle indicator.
+  line(pivot,{x:0,y:1.12,z:0},'rgba(208,220,232,.45)',1,[3,4]);
+  line({x:0,y:.05,z:0},{x:0,y:-.55,z:0},'rgba(208,220,232,.25)',1);
+  const labelX=bp.x+radius+10,labelY=bp.y-5;ctx.fillStyle='#e5edf4';ctx.font='11px ui-monospace,monospace';ctx.textAlign='left';ctx.fillText('BOB',labelX,labelY);
+  ctx.fillStyle='rgba(227,236,244,.55)';ctx.font='9px ui-monospace,monospace';ctx.textAlign='left';ctx.fillText('PIVOT',project(pivot).x+10,project(pivot).y-8);
+}
+const heroCam={yaw:-.42,pitch:.12,zoom:5.7,scale:300};
+function resizeModelCanvas(canvas){if(canvas===mainCanvas)draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});else draw3D(canvas,heroCam,model.theta,{trail:true,ghosts:true});}
+function updateModelOutputs(){document.getElementById('modelLengthOut').textContent=model.length.toFixed(2)+' m';document.getElementById('modelAngleOut').textContent=Math.round(model.angle*180/Math.PI)+'°';document.getElementById('modelMassOut').textContent=Math.round(model.mass)+' g';document.getElementById('modelDampingOut').textContent=model.damping.toFixed(2)+' s⁻¹';document.getElementById('statPeriod').textContent=modelPeriod().toFixed(2)+' s';document.getElementById('statAngle').textContent=(model.theta*180/Math.PI).toFixed(1)+'°';document.getElementById('statOmega').textContent=model.omega.toFixed(2)+' rad/s';const pos=model.length*Math.sin(model.theta);document.getElementById('statPosition').textContent=(pos>=0?'+':'')+pos.toFixed(2)+' m';}
+function syncModel(){model.length=Number(document.getElementById('modelLength').value);model.angle=Number(document.getElementById('modelAngle').value)*Math.PI/180;model.mass=Number(document.getElementById('modelMass').value);model.damping=Number(document.getElementById('modelDamping').value);document.getElementById('toggleTrail').checked=model.trail;document.getElementById('toggleGhosts').checked=model.ghosts;if(!model.running){model.theta=model.angle;model.omega=0;}updateModelOutputs();draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});}
+['modelLength','modelAngle','modelMass','modelDamping'].forEach(id=>document.getElementById(id).addEventListener('input',syncModel));
+document.getElementById('toggleTrail').addEventListener('change',e=>{model.trail=e.target.checked;syncModel();});document.getElementById('toggleGhosts').addEventListener('change',e=>{model.ghosts=e.target.checked;syncModel();});
+function playToggle(){model.running=!model.running;document.getElementById('playMotion').textContent=model.running?'Ⅱ Pause':'▶ Play';document.getElementById('motionStatus').textContent=model.running?'Running':'Paused';model.last=0;if(model.running)requestAnimationFrame(tick);}
+document.getElementById('playMotion').addEventListener('click',playToggle);document.getElementById('resetMotion').addEventListener('click',()=>{model.running=false;model.theta=model.angle;model.omega=0;document.getElementById('playMotion').textContent='▶ Play';document.getElementById('motionStatus').textContent='Paused';updateModelOutputs();draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});});
+document.getElementById('resetCamera').addEventListener('click',()=>{if(activeModelTab==='dynamics'){model.yaw=-.35;model.pitch=.16;model.zoom=5.6;draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});}else if(activeModelTab==='physics'){physicsVizCam.yaw=-.28;physicsVizCam.pitch=.17;physicsVizCam.zoom=4.8;drawPhysicsViz();}else if(activeModelTab==='chemistry'){chemistryVizCam.yaw=-.20;chemistryVizCam.pitch=.12;chemistryVizCam.zoom=5.6;drawChemViz();}else if(activeModelTab==='mathematics'){mathematicsVizCam.yaw=-.30;mathematicsVizCam.pitch=.16;mathematicsVizCam.zoom=4.8;drawMathViz();}});
+function acceleration(theta,omega){return -(9.81/model.length)*Math.sin(theta)-model.damping*omega;}
+function integrate(dt){const y=model.theta,w=model.omega;const a1=w,b1=acceleration(y,w),a2=w+b1*dt/2,b2=acceleration(y+a1*dt/2,w+b1*dt/2),a3=w+b2*dt/2,b3=acceleration(y+a2*dt/2,w+b2*dt/2),a4=w+b3*dt,b4=acceleration(y+a3*dt,w+b3*dt);model.theta+=dt*(a1+2*a2+2*a3+a4)/6;model.omega+=dt*(b1+2*b2+2*b3+b4)/6;}
+function tick(t){if(!model.running)return;if(!model.last)model.last=t;const elapsed=Math.min(.04,(t-model.last)/1000);model.last=t;const steps=Math.max(1,Math.ceil(elapsed/.008)),dt=elapsed/steps;for(let i=0;i<steps;i++)integrate(dt);if(Math.abs(model.theta)<.0005&&Math.abs(model.omega)<.0005&&model.damping>.01){model.theta=0;model.omega=0;model.running=false;document.getElementById('playMotion').textContent='▶ Play';document.getElementById('motionStatus').textContent='Settled';}updateModelOutputs();draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});if(model.running)requestAnimationFrame(tick);}
+function attachOrbit(canvas,main){
+  if(!canvas)return;const pointers=new Map();let lastPoint=null,pinchDistance=0,pinchZoom=0;
+  const zoomRef=()=>main?model.zoom:heroCam.zoom;
+  const setZoom=v=>{if(main)model.zoom=clamp(v,4.1,8.5);else heroCam.zoom=clamp(v,4.1,8.5);};
+  const redraw=()=>{if(main)draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});else draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});};
+  const distance=()=>{const pts=[...pointers.values()];if(pts.length<2)return 0;return Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);};
+  canvas.addEventListener('pointerdown',e=>{pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});canvas.setPointerCapture(e.pointerId);if(pointers.size===1)lastPoint={x:e.clientX,y:e.clientY};if(pointers.size===2){pinchDistance=distance();pinchZoom=zoomRef();}});
+  canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>=2){const d=distance();if(pinchDistance>0&&d>0)setZoom(pinchZoom+(pinchDistance-d)*.012);redraw();return;}const dx=e.clientX-prev.x,dy=e.clientY-prev.y;if(main){model.yaw+=dx*.009;model.pitch=clamp(model.pitch+dy*.006,-.4,.75);}else{heroCam.yaw+=dx*.009;heroCam.pitch=clamp(heroCam.pitch+dy*.006,-.35,.7);}redraw();});
+  const end=e=>{pointers.delete(e.pointerId);if(pointers.size===1){const pt=[...pointers.values()][0];lastPoint=pt;}else{lastPoint=null;pinchDistance=0;}};
+  canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);canvas.addEventListener('lostpointercapture',end);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoomRef()+e.deltaY*.003);redraw();},{passive:false});
+}
+attachOrbit(mainCanvas,true);attachOrbit(heroCanvas,false);
+window.addEventListener('resize',()=>{draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});drawPhysicsViz();drawChemViz();drawMathViz();if(document.getElementById('page-physics').classList.contains('active')&&document.getElementById('physicsResults').classList.contains('show'))drawPhysicsChart();if(document.getElementById('page-chemistry').classList.contains('active')&&document.getElementById('chemResults').classList.contains('show'))drawChemChart();if(document.getElementById('page-mathematics').classList.contains('active')&&document.getElementById('mathResults').classList.contains('show'))drawMathChart();});
+
+// ---------- Experiment-specific interactive 3D scenes ----------
+// Each canvas is a perspective-projected 3D scene with an independent orbit camera.
+function sceneKit(canvas,cam,centerY=.60){
+  if(!canvas||!canvas.isConnected)return null;
+  const rect=canvas.getBoundingClientRect(),dpr=getRenderDpr();
+  const w=Math.max(280,rect.width),h=Math.max(220,rect.height);
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
+  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  const scale=Math.min(w,h)*1.58,cx=w/2,cy=h*centerY;
+  const project=p=>{const cY=Math.cos(cam.yaw),sY=Math.sin(cam.yaw),cX=Math.cos(cam.pitch),sX=Math.sin(cam.pitch);const x=p.x*cY-p.z*sY,z0=p.x*sY+p.z*cY,y=p.y*cX-z0*sX,z=p.y*sX+z0*cX;const depth=Math.max(1.6,cam.zoom-z),f=scale/depth;return {x:cx+x*f,y:cy-y*f,z,f};};
+  const line=(a,b,color='#cbd5df',width=2,dash=[])=>{const A=project(a),B=project(b);ctx.beginPath();ctx.setLineDash(dash);ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();ctx.setLineDash([]);};
+  const poly=(pts,color,width=2,dash=[])=>{if(!pts.length)return;ctx.beginPath();ctx.setLineDash(dash);pts.forEach((p,i)=>{const q=project(p);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();ctx.setLineDash([]);};
+  const dot=(p,r,color)=>{const q=project(p);ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();};
+  const sphere=(p,worldRadius,base='#d98959',highlight='#fff0d9',shadow='#633b39')=>{const q=project(p),r=Math.max(6,worldRadius*q.f*.82);const g=ctx.createRadialGradient(q.x-r*.34,q.y-r*.42,1,q.x,q.y,r*1.16);g.addColorStop(0,highlight);g.addColorStop(.28,base);g.addColorStop(.78,base);g.addColorStop(1,shadow);ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1.1;ctx.stroke();ctx.beginPath();ctx.arc(q.x-r*.28,q.y-r*.32,Math.max(2,r*.12),0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.75)';ctx.fill();return {x:q.x,y:q.y,r};};
+  const label=(p,text,color='#e8eff5',align='left')=>{const q=project(p);ctx.fillStyle=color;ctx.font='10px ui-monospace,monospace';ctx.textAlign=align;ctx.fillText(text,q.x,q.y);};
+  const arrow=(a,b,color='#79b4ca',width=2)=>{line(a,b,color,width);const A=project(a),B=project(b),ang=Math.atan2(B.y-A.y,B.x-A.x),size=7;ctx.beginPath();ctx.moveTo(B.x,B.y);ctx.lineTo(B.x-size*Math.cos(ang-.48),B.y-size*Math.sin(ang-.48));ctx.lineTo(B.x-size*Math.cos(ang+.48),B.y-size*Math.sin(ang+.48));ctx.closePath();ctx.fillStyle=color;ctx.fill();};
+  const ground=(y=-.5)=>{for(let i=-4;i<=4;i++){const a=i*.38;line({x:a,y,z:-1.7},{x:a,y,z:1.7},'rgba(190,207,222,.13)',1);line({x:-1.7,y,z:a},{x:1.7,y,z:a},'rgba(190,207,222,.13)',1);}};
+  return {ctx,w,h,project,line,poly,dot,sphere,label,arrow,ground};
+}
+function attachSceneOrbit(canvas,cam,redraw){
+  if(!canvas)return;const pointers=new Map();let pinchDistance=0,pinchZoom=cam.zoom;
+  const distance=()=>{const pts=[...pointers.values()];return pts.length<2?0:Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);};
+  canvas.addEventListener('pointerdown',e=>{pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});canvas.setPointerCapture(e.pointerId);if(pointers.size===2){pinchDistance=distance();pinchZoom=cam.zoom;}});
+  canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>=2){const d=distance();if(pinchDistance>0&&d>0)cam.zoom=clamp(pinchZoom+(pinchDistance-d)*.012,3.5,8.5);redraw();return;}const dx=e.clientX-prev.x,dy=e.clientY-prev.y;cam.yaw+=dx*.009;cam.pitch=clamp(cam.pitch+dy*.006,-.48,.88);redraw();});
+  const stop=e=>{pointers.delete(e.pointerId);if(pointers.size<2)pinchDistance=0;};canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);canvas.addEventListener('lostpointercapture',stop);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();cam.zoom=clamp(cam.zoom+e.deltaY*.003,3.5,8.5);redraw();},{passive:false});
+}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+// PHYSICS: full apparatus, release angle, bob, dimension line, gravity and swing arc.
+const physicsVizCanvas=document.getElementById('physics3DCanvas');
+const physicsVizCam={yaw:-.28,pitch:.17,zoom:4.8};
+const physicsViz={theta:24*Math.PI/180,playing:false,start:null,raf:0};
+function physicsVizParams(){return {L:Number(document.getElementById('pVizLength').value)/100,angle:Number(document.getElementById('pVizAngle').value)*Math.PI/180,g:Number(document.getElementById('pReference').value)||9.81};}
+function drawPhysicsViz(){const k=sceneKit(physicsVizCanvas,physicsVizCam,.61);if(!k)return;const {line,poly,dot,sphere,label,arrow,ground}=k;const p=physicsVizParams();if(!physicsViz.playing)physicsViz.theta=p.angle;const len=.72+p.L*.62,pivot={x:0,y:1.38,z:0},bob={x:len*Math.sin(physicsViz.theta),y:pivot.y-len*Math.cos(physicsViz.theta),z:0};
+  ground(-.52);line({x:-.52,y:-.52,z:-.12},{x:.52,y:-.52,z:-.12},'#73879b',5);line({x:-.52,y:-.52,z:.35},{x:.52,y:-.52,z:.35},'#73879b',5);line({x:-.52,y:-.52,z:-.12},{x:-.52,y:-.52,z:.35},'#73879b',4);line({x:.52,y:-.52,z:-.12},{x:.52,y:-.52,z:.35},'#73879b',4);
+  line({x:-.42,y:-.52,z:-.12},{x:-.17,y:1.48,z:-.12},'#91a3b5',5);line({x:.42,y:-.52,z:-.12},{x:.17,y:1.48,z:-.12},'#91a3b5',5);line({x:-.42,y:-.52,z:.35},{x:-.17,y:1.48,z:.35},'#64798e',4);line({x:.42,y:-.52,z:.35},{x:.17,y:1.48,z:.35},'#64798e',4);line({x:-.17,y:1.48,z:-.12},{x:.17,y:1.48,z:-.12},'#d0dbe5',5);line({x:0,y:1.48,z:-.12},{x:0,y:1.48,z:.35},'#aab9c8',4);
+  // Full swing envelope and the vertical reference.
+  const arc=[];for(let i=0;i<=90;i++){const a=-p.angle+2*p.angle*i/90;arc.push({x:len*Math.sin(a),y:pivot.y-len*Math.cos(a),z:0});}poly(arc,'rgba(231,145,98,.72)',2,[4,5]);
+  line(pivot,{x:0,y:pivot.y-len-.12,z:0},'rgba(221,231,239,.46)',1.2,[4,4]);
+  for(const a of [-p.angle,p.angle]){const g={x:len*Math.sin(a),y:pivot.y-len*Math.cos(a),z:0};dot(g,8,'rgba(231,239,245,.30)');}
+  // Length marker offset behind the string.
+  const dimA={x:-.16,y:pivot.y-.02,z:-.08},dimB={x:bob.x-.16,y:bob.y-.02,z:-.08};line(dimA,dimB,'#9dc4d1',1.5,[3,3]);
+  line(pivot,bob,'#d4dfe8',Math.max(2.5,1.5+p.L*1.8));dot(pivot,5,'#f0a16f');const ball=sphere(bob,.14,'#d98959','#fff0d9','#633b39');
+  arrow({x:bob.x+.2,y:bob.y-.06,z:0},{x:bob.x+.2,y:bob.y-.40,z:0},'#e5b36e',2);label({x:bob.x+.28,y:bob.y-.42,z:0},'g','#f0c88e');label({x:0,y:1.58,z:0},'PIVOT','#e5edf4','center');label({x:dimB.x-.1,y:(dimA.y+dimB.y)/2,z:-.08},`L ${Math.round(p.L*100)} cm`,'#b8dce8','right');
+  const period=2*Math.PI*Math.sqrt(p.L/p.g);document.getElementById('pVizLengthOut').textContent=Math.round(p.L*100)+' cm';document.getElementById('pVizAngleOut').textContent=Math.round(p.angle*180/Math.PI)+'°';document.getElementById('physicsVizPeriod').textContent=fmt(period,2)+' s';
+}
+function physicsVizTick(t){if(!physicsViz.playing)return;if(physicsViz.start===null)physicsViz.start=t;const p=physicsVizParams(),T=2*Math.PI*Math.sqrt(p.L/p.g);physicsViz.theta=p.angle*Math.cos((t-physicsViz.start)/1000*2*Math.PI/T);drawPhysicsViz();physicsViz.raf=requestAnimationFrame(physicsVizTick);}
+function stopPhysicsViz(reset=false){physicsViz.playing=false;if(physicsViz.raf)cancelAnimationFrame(physicsViz.raf);physicsViz.start=null;document.getElementById('physicsVizPlay').textContent='▶ Play motion';if(reset)physicsViz.theta=physicsVizParams().angle;drawPhysicsViz();}
+['pVizLength','pVizAngle'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{stopPhysicsViz(true);drawPhysicsViz();saveState();}));
+document.getElementById('pReference').addEventListener('input',drawPhysicsViz);
+document.getElementById('pLength').addEventListener('input',()=>{const v=Number(document.getElementById('pLength').value);if(v>0){document.getElementById('pVizLength').value=clamp(v,20,120);stopPhysicsViz(true);}});
+document.getElementById('physicsVizPlay').addEventListener('click',()=>{physicsViz.playing=!physicsViz.playing;if(physicsViz.playing){physicsViz.start=null;document.getElementById('physicsVizPlay').textContent='Ⅱ Pause';physicsViz.raf=requestAnimationFrame(physicsVizTick);}else stopPhysicsViz(false);});
+document.getElementById('physicsVizReset').addEventListener('click',()=>stopPhysicsViz(true));
+document.getElementById('physicsVizCopyLength').addEventListener('click',()=>{document.getElementById('pLength').value=(Number(document.getElementById('pVizLength').value)).toFixed(1);document.getElementById('pLength').focus();});
+attachSceneOrbit(physicsVizCanvas,physicsVizCam,drawPhysicsViz);
+
+// CHEMISTRY: paired stationary/swinging rigs, temperature-tinted metal and airflow ribbons.
+const chemistryVizCanvas=document.getElementById('chemistry3DCanvas');
+const chemistryVizCam={yaw:-.20,pitch:.12,zoom:5.6};
+const chemistryViz={playing:false,start:null,theta:0,raf:0};
+function hexRgb(hex){const n=parseInt(hex.slice(1),16);return [(n>>16)&255,(n>>8)&255,n&255];}
+function rgbHex(rgb){return '#'+rgb.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');}
+function mixHex(a,b,t){const A=hexRgb(a),B=hexRgb(b);return rgbHex(A.map((v,i)=>v+(B[i]-v)*t));}
+function thermalSphereColor(temp){if(temp<=50)return mixHex('#4b91ad','#eaa05f',clamp((temp-20)/30,0,1));return mixHex('#eaa05f','#c55348',clamp((temp-50)/35,0,1));}
+function chemistryVizTemperatures(){const initial=Number(document.getElementById('cInitial').value)||60;return {initial,stationary:state.stationary.length?state.stationary[state.stationary.length-1].temp:initial,dynamic:state.dynamic.length?state.dynamic[state.dynamic.length-1].temp:initial,hasStatic:state.stationary.length>0,hasDynamic:state.dynamic.length>0};}
+function drawChemViz(){const k=sceneKit(chemistryVizCanvas,chemistryVizCam,.62);if(!k)return;const {line,poly,dot,sphere,label,arrow,ground,ctx}=k;const temps=chemistryVizTemperatures(),amp=Number(document.getElementById('chemVizAngle').value)*Math.PI/180,air=Number(document.getElementById('chemAirflow').value)/100;if(!chemistryViz.playing)chemistryViz.theta=0;
+  ground(-.5);line({x:-1.45,y:1.38,z:0},{x:1.45,y:1.38,z:0},'#bac7d2',7);line({x:-1.45,y:1.38,z:0},{x:-1.45,y:1.16,z:0},'#8194a7',5);line({x:1.45,y:1.38,z:0},{x:1.45,y:1.16,z:0},'#8194a7',5);
+  const pivots=[{x:-.78,y:1.38,z:0},{x:.78,y:1.38,z:0}],length=.86,r=.145;const staticBob={x:pivots[0].x,y:pivots[0].y-length,z:0},dynamicBob={x:pivots[1].x+length*Math.sin(chemistryViz.theta),y:pivots[1].y-length*Math.cos(chemistryViz.theta),z:0};
+  // Ghost envelope for the swinging condition.
+  const swingArc=[];for(let i=0;i<=50;i++){const a=-amp+2*amp*i/50;swingArc.push({x:pivots[1].x+length*Math.sin(a),y:pivots[1].y-length*Math.cos(a),z:0});}poly(swingArc,'rgba(227,148,99,.52)',1.8,[3,5]);
+  line(pivots[0],staticBob,'#d3dde6',3);line(pivots[1],dynamicBob,'#d3dde6',3);dot(pivots[0],5,'#f0a16f');dot(pivots[1],5,'#f0a16f');
+  const cS=thermalSphereColor(temps.stationary),cD=thermalSphereColor(temps.dynamic);const sBall=sphere(staticBob,r,cS,'#fff0d6','#344b63'),dBall=sphere(dynamicBob,r,cD,'#fff0d6','#344b63');
+  // Subtle heat halos make the temperature contrast legible without implying a measured field.
+  [[sBall,temps.stationary],[dBall,temps.dynamic]].forEach(([b,t])=>{ctx.beginPath();ctx.arc(b.x,b.y,b.r+7,0,Math.PI*2);ctx.strokeStyle=`rgba(239,165,98,${clamp((t-20)/100,.10,.34)})`;ctx.lineWidth=2;ctx.stroke();});
+  // Airflow ribbons appear around the moving bob only.
+  if(air>0){const count=2+Math.round(air*4);for(let i=0;i<count;i++){const z=(i-(count-1)/2)*.09;const yoff=(i%3-1)*.14;const a={x:dynamicBob.x-.53,y:dynamicBob.y+yoff,z},b={x:dynamicBob.x+.38,y:dynamicBob.y+yoff+.02,z};arrow(a,b,`rgba(119,190,207,${.25+air*.58})`,1+air*1.1);}}
+  label({x:staticBob.x,y:staticBob.y-.28,z:0},'STATIONARY','#e3edf4','center');label({x:dynamicBob.x,y:dynamicBob.y-.28,z:0},'SWINGING','#e3edf4','center');
+  document.getElementById('chemVizStaticTemp').textContent=fmt(temps.stationary,1)+' °C';document.getElementById('chemVizDynamicTemp').textContent=fmt(temps.dynamic,1)+' °C';document.getElementById('chemVizAngleOut').textContent=Math.round(amp*180/Math.PI)+'°';document.getElementById('chemAirflowOut').textContent=Math.round(air*100)+'%';
+  document.getElementById('chemVizDataNote').textContent=(temps.hasStatic||temps.hasDynamic)?'Colour uses the latest recorded temperature in each available data series.':'No temperature readings yet. Both models use the initial temperature.';
+}
+function chemistryVizTick(t){if(!chemistryViz.playing)return;if(chemistryViz.start===null)chemistryViz.start=t;const amp=Number(document.getElementById('chemVizAngle').value)*Math.PI/180;chemistryViz.theta=amp*Math.sin((t-chemistryViz.start)/1000*1.55);drawChemViz();chemistryViz.raf=requestAnimationFrame(chemistryVizTick);}
+function stopChemistryViz(){chemistryViz.playing=false;if(chemistryViz.raf)cancelAnimationFrame(chemistryViz.raf);chemistryViz.start=null;chemistryViz.theta=0;document.getElementById('chemVizPlay').textContent='▶ Animate swing';drawChemViz();}
+document.getElementById('chemVizAngle').addEventListener('input',()=>{stopChemistryViz();drawChemViz();saveState();});document.getElementById('chemAirflow').addEventListener('input',()=>{drawChemViz();saveState();});
+document.getElementById('chemVizPlay').addEventListener('click',()=>{chemistryViz.playing=!chemistryViz.playing;if(chemistryViz.playing){chemistryViz.start=null;document.getElementById('chemVizPlay').textContent='Ⅱ Pause swing';chemistryViz.raf=requestAnimationFrame(chemistryVizTick);}else{chemistryViz.playing=false;if(chemistryViz.raf)cancelAnimationFrame(chemistryViz.raf);chemistryViz.start=null;document.getElementById('chemVizPlay').textContent='▶ Animate swing';}});
+document.getElementById('chemVizReset').addEventListener('click',()=>{chemistryVizCam.yaw=-.20;chemistryVizCam.pitch=.12;chemistryVizCam.zoom=5.6;stopChemistryViz();});
+attachSceneOrbit(chemistryVizCanvas,chemistryVizCam,drawChemViz);
+
+// MATHEMATICS: actual 3D arc plus the straight chord between extreme positions.
+const mathematicsVizCanvas=document.getElementById('mathematics3DCanvas');
+const mathematicsVizCam={yaw:-.30,pitch:.16,zoom:4.8};
+const mathematicsViz={playing:false,start:null,phi:30*Math.PI/180,raf:0};
+function mathVizParams(){const L=Number(document.getElementById('mVizLength').value)||50;const a=Number(document.getElementById('mVizAngle').value)||30;return {L,angle:clamp(a,1,170)*Math.PI/180};}
+function drawMathViz(){const k=sceneKit(mathematicsVizCanvas,mathematicsVizCam,.68);if(!k)return;const {line,poly,dot,sphere,label,ground}=k;const p=mathVizParams();if(!mathematicsViz.playing)mathematicsViz.phi=p.angle;const len=.78+clamp(p.L,20,150)/150*.55,pivot={x:0,y:.98,z:0},start={x:len*Math.sin(p.angle),y:pivot.y-len*Math.cos(p.angle),z:0},end={x:-len*Math.sin(p.angle),y:pivot.y-len*Math.cos(p.angle),z:0},bob={x:len*Math.sin(mathematicsViz.phi),y:pivot.y-len*Math.cos(mathematicsViz.phi),z:0};
+  ground(-.52);line({x:-.52,y:-.52,z:-.12},{x:.52,y:-.52,z:-.12},'#788ca0',5);line({x:-.40,y:-.52,z:-.12},{x:-.15,y:1.1,z:-.12},'#93a5b6',5);line({x:.40,y:-.52,z:-.12},{x:.15,y:1.1,z:-.12},'#93a5b6',5);line({x:-.15,y:1.1,z:-.12},{x:.15,y:1.1,z:-.12},'#ccd7e1',5);dot(pivot,5,'#f0a16f');
+  const arc=[];for(let i=0;i<=100;i++){const a=p.angle-2*p.angle*i/100;arc.push({x:len*Math.sin(a),y:pivot.y-len*Math.cos(a),z:0});}poly(arc,'#62b6d0',4);line(start,end,'#eca36f',3.2);line(pivot,start,'rgba(213,225,235,.46)',1.4,[4,4]);line(pivot,end,'rgba(213,225,235,.46)',1.4,[4,4]);
+  [start,end].forEach(pt=>{const q=k.project(pt);k.ctx.beginPath();k.ctx.arc(q.x,q.y,7,0,Math.PI*2);k.ctx.strokeStyle='rgba(236,243,248,.55)';k.ctx.setLineDash([3,3]);k.ctx.lineWidth=1.3;k.ctx.stroke();k.ctx.setLineDash([]);});
+  line(pivot,bob,'#d8e1e9',2.6);sphere(bob,.13,'#d98959','#fff0d9','#633b39');label({x:0,y:1.18,z:0},'PIVOT','#e7eef4','center');label({x:0,y:(start.y+end.y)/2,z:.04},'CHORD','#f1b27e','center');label({x:len*.7*Math.sin(p.angle),y:pivot.y-len*.7*Math.cos(p.angle)+.12,z:0},'ARC','#9ad3e5','center');
+  const rad=p.angle,arcCm=2*p.L*rad,chordCm=2*p.L*Math.sin(rad);document.getElementById('mVizLengthOut').textContent=fmt(p.L,0)+' cm';document.getElementById('mVizAngleOut').textContent=Math.round(rad*180/Math.PI)+'°';document.getElementById('mathVizArc').textContent=fmt(arcCm,2)+' cm';document.getElementById('mathVizChord').textContent='Chord displacement · '+fmt(chordCm,2)+' cm';
+}
+function mathematicsVizTick(t){if(!mathematicsViz.playing)return;if(mathematicsViz.start===null)mathematicsViz.start=t;const p=mathVizParams(),u=((t-mathematicsViz.start)/2600)%1;mathematicsViz.phi=p.angle*Math.cos(Math.PI*u);drawMathViz();mathematicsViz.raf=requestAnimationFrame(mathematicsVizTick);}
+function stopMathematicsViz(){mathematicsViz.playing=false;if(mathematicsViz.raf)cancelAnimationFrame(mathematicsViz.raf);mathematicsViz.start=null;mathematicsViz.phi=mathVizParams().angle;document.getElementById('mathVizPlay').textContent='▶ Animate half-period';drawMathViz();}
+document.getElementById('mVizLength').addEventListener('input',e=>{document.getElementById('mLength').value=e.target.value;drawMathViz();saveState();});document.getElementById('mVizAngle').addEventListener('input',e=>{document.getElementById('mAngle').value=e.target.value;stopMathematicsViz();drawMathViz();saveState();});
+document.getElementById('mLength').addEventListener('input',()=>{document.getElementById('mVizLength').value=clamp(Number(document.getElementById('mLength').value)||50,20,150);drawMathViz();});document.getElementById('mAngle').addEventListener('input',()=>{document.getElementById('mVizAngle').value=clamp(Number(document.getElementById('mAngle').value)||30,1,170);stopMathematicsViz();drawMathViz();});
+document.getElementById('mathVizPlay').addEventListener('click',()=>{mathematicsViz.playing=!mathematicsViz.playing;if(mathematicsViz.playing){mathematicsViz.start=null;document.getElementById('mathVizPlay').textContent='Ⅱ Pause';mathematicsViz.raf=requestAnimationFrame(mathematicsVizTick);}else{mathematicsViz.playing=false;if(mathematicsViz.raf)cancelAnimationFrame(mathematicsViz.raf);document.getElementById('mathVizPlay').textContent='▶ Animate half-period';}});
+document.getElementById('mathVizReset').addEventListener('click',()=>stopMathematicsViz());
+document.getElementById('mathVizUseValues').addEventListener('click',()=>{const p=mathVizParams();document.getElementById('mLength').value=p.L;document.getElementById('mAngle').value=(p.angle*180/Math.PI).toFixed(1);});
+attachSceneOrbit(mathematicsVizCanvas,mathematicsVizCam,drawMathViz);
+
+
+// ---------- Central 3D gallery navigation ----------
+let activeModelTab = 'dynamics';
+function setModelTab(key){
+  const allowed=['dynamics','physics','chemistry','mathematics'];if(!allowed.includes(key))return;
+  activeModelTab=key;
+  document.querySelectorAll('[data-model-tab]').forEach(btn=>{const on=btn.dataset.modelTab===key;btn.classList.toggle('active',on);btn.setAttribute('aria-selected',on?'true':'false');});
+  document.querySelectorAll('.model-tab-panel').forEach(panel=>panel.classList.toggle('active',panel.id==='modeltab-'+key));
+  requestAnimationFrame(()=>{
+    if(key==='dynamics')resizeModelCanvas(mainCanvas);
+    if(key==='physics')drawPhysicsViz();
+    if(key==='chemistry')drawChemViz();
+    if(key==='mathematics')drawMathViz();
+  });
+}
+document.querySelectorAll('[data-model-tab]').forEach(btn=>btn.addEventListener('click',()=>setModelTab(btn.dataset.modelTab)));
+document.querySelectorAll('[data-open-model]').forEach(btn=>btn.addEventListener('click',()=>{showPage('model');setModelTab(btn.dataset.openModel);}));
+
+// ---------- Asset Sentinel: transparent baseline / latest cross-signal screen ----------
+const sentinelFieldIds=['assetName','assetType','assetLocation','freqBase','freqNow','rmsBase','rmsNow','surfBase','surfNow','ambBase','ambNow','thFreq','thRms','thTemp'];
+function sentinelValues(){const out={};sentinelFieldIds.forEach(id=>{const el=document.getElementById(id);out[id]=el?el.value:'';});return out;}
+function sentinelPersist(){try{localStorage.setItem('smartshm-asset-sentinel-v1',JSON.stringify(sentinelValues()));}catch(e){/* The main project export remains available if storage is blocked. */}}
+function sentinelSetMode(text){document.getElementById('sentinelMode').textContent=text;}
+function sentinelNumber(id){const el=document.getElementById(id);if(!el||el.value.trim()==='')return NaN;const n=Number(el.value);return Number.isFinite(n)?n:NaN;}
+function sentinelCalc(showErrors=true){
+  const v={f0:sentinelNumber('freqBase'),f1:sentinelNumber('freqNow'),r0:sentinelNumber('rmsBase'),r1:sentinelNumber('rmsNow'),s0:sentinelNumber('surfBase'),s1:sentinelNumber('surfNow'),a0:sentinelNumber('ambBase'),a1:sentinelNumber('ambNow'),tf:sentinelNumber('thFreq'),tr:sentinelNumber('thRms'),tt:sentinelNumber('thTemp')};
+  const required=['f0','f1','r0','r1','s0','s1','a0','a1','tf','tr','tt'];
+  if(required.some(k=>!Number.isFinite(v[k]))){if(showErrors)alert('Complete all baseline, latest and threshold fields before analysing.');return null;}
+  if(v.f0<=0||v.f1<=0||v.r0<=0||v.r1<=0||v.tf<=0||v.tr<=0||v.tt<=0){if(showErrors)alert('Frequency, RMS acceleration and screening thresholds must be greater than zero.');return null;}
+  const freqShift=Math.abs(v.f1-v.f0)/v.f0*100;
+  const rmsIncrease=(v.r1-v.r0)/v.r0*100;
+  const baseLift=v.s0-v.a0,latestLift=v.s1-v.a1,thermalChange=latestLift-baseLift;
+  const signals=[
+    {key:'frequency',name:'Frequency drift',value:freqShift,unit:'%',threshold:v.tf,flag:freqShift>=v.tf,display:fmt(freqShift,1)+'%',limit:fmt(v.tf,1)+'%',detail:`Frequency estimate moved from ${fmt(v.f0,2)} Hz to ${fmt(v.f1,2)} Hz. A shift is a reason to verify speed, load, mounting and possible resonance changes.`},
+    {key:'vibration',name:'RMS vibration rise',value:rmsIncrease,unit:'%',threshold:v.tr,flag:rmsIncrease>=v.tr,display:(rmsIncrease>=0?'+':'')+fmt(rmsIncrease,1)+'%',limit:'+'+fmt(v.tr,1)+'%',detail:`RMS acceleration changed from ${fmt(v.r0,4)} g to ${fmt(v.r1,4)} g. Repeat at comparable operating conditions and inspect the measurement location and machine context.`},
+    {key:'thermal',name:'Thermal lift change',value:thermalChange,unit:'°C',threshold:v.tt,flag:thermalChange>=v.tt,display:(thermalChange>=0?'+':'')+fmt(thermalChange,1)+' °C',limit:'+'+fmt(v.tt,1)+' °C',detail:`Surface-to-ambient lift changed from ${fmt(baseLift,1)} °C to ${fmt(latestLift,1)} °C. Verify sensor contact / emissivity, ambient conditions, process load and cooling.`}
+  ];
+  const count=signals.filter(x=>x.flag).length;
+  const level=count===0?'NO USER LIMIT EXCEEDED':count===1?'SINGLE-SIGNAL REVIEW':'CROSS-SIGNAL REVIEW';
+  const summary=count===0?'None of the three configured screening limits was exceeded. Continue routine trending; this is not proof that the asset is fault-free.':count===1?'One indicator crossed its configured limit. Repeat the measurement, confirm the operating state and investigate that signal before drawing a conclusion.':'More than one independent indicator crossed its configured limit. This convergence is a reason to prioritise a corroborating inspection by a qualified person—not a diagnosis of a specific fault.';
+  const actions=[];
+  if(signals[0].flag)actions.push('Frequency: confirm RPM / forcing frequency, load, sensor orientation and mounting; compare with historical operating states.');
+  if(signals[1].flag)actions.push('Vibration: repeat the capture and review balance, alignment, looseness, bearing condition and process changes as appropriate to the asset.');
+  if(signals[2].flag)actions.push('Thermal: verify the temperature method and ambient reading; check cooling airflow, lubrication, flow and operating load.');
+  if(!count)actions.push('Continue scheduled measurements and keep the baseline conditions and sensor installation documented.');
+  return {values:v,signals,count,level,summary,actions,asset:document.getElementById('assetName').value.trim()||'Unnamed asset',assetType:document.getElementById('assetType').value,location:document.getElementById('assetLocation').value.trim(),baseLift,latestLift,createdAt:new Date().toISOString()};
+}
+function renderSentinel(result){
+  const host=document.getElementById('sentinelResult');
+  if(!result){host.innerHTML='<div class="sentinel-result-empty"><div class="empty-orbit">◎</div><span class="eyebrow">AWAITING MEASUREMENTS</span><h3>Build your first comparison</h3><p>Load the pump demo or enter both baseline and latest readings. The screen will show the three signal changes separately.</p></div>';return;}
+  const flagged=result.signals.filter(s=>s.flag).length;
+  const bars=result.signals.map(sig=>{const scale=Math.min(100,Math.max(5,Math.abs(sig.value)/(Math.max(sig.threshold,.001)*2)*100));return `<div class="sentinel-signal"><span class="signal-name">${escapeText(sig.name)}</span><span class="sentinel-track"><i class="${sig.flag?'flag':''}" style="width:${scale}%"></i></span><b>${escapeText(sig.display)}</b></div>`;}).join('');
+  const actions=result.actions.map(x=>`<li>${escapeText(x)}</li>`).join('');
+  host.innerHTML=`<div class="sentinel-result-head"><div><span class="eyebrow">${escapeText(result.level)}</span><h3>${flagged} of 3 indicators flagged</h3><p>${escapeText(result.asset)} · ${escapeText(result.assetType)}</p></div><span class="sentinel-count">${flagged}/3</span></div><div class="sentinel-bars">${bars}</div><div class="sentinel-recommendation"><strong>SCREENING INTERPRETATION</strong><p>${escapeText(result.summary)}</p><ul class="sentinel-actions-list">${actions}</ul></div><div class="small-note" style="color:#b8c8d4;margin-top:10px">Threshold-based screening only · no fault diagnosis · no safety verdict.</div>`;
+}
+function analyseSentinel(){const result=sentinelCalc(true);if(!result)return;window.sentinelLastReport=result;renderSentinel(result);sentinelPersist();}
+function sentinelDemo(){
+  const vals={assetName:'Cooling-water pump P-204',assetType:'pump',assetLocation:'Drive-end bearing housing · horizontal axis',freqBase:'24.0',freqNow:'27.1',rmsBase:'0.080',rmsNow:'0.130',surfBase:'42.0',surfNow:'57.0',ambBase:'25.0',ambNow:'27.0',thFreq:'5',thRms:'50',thTemp:'8'};
+  Object.entries(vals).forEach(([id,value])=>document.getElementById(id).value=value);
+  sentinelSetMode('DEMO · SIMULATED READINGS');document.getElementById('sentinelImportStatus').textContent='Illustrative pump scenario only. These values are generated for demonstration and are not field measurements.';
+  analyseSentinel();
+}
+function sentinelClear(){sentinelFieldIds.forEach(id=>{const el=document.getElementById(id);if(!el)return;if(['thFreq','thRms','thTemp'].includes(id))el.value=({thFreq:'5',thRms:'50',thTemp:'8'})[id];else if(id==='assetType')el.value='pump';else el.value='';});sentinelSetMode('NO DATA · READY');document.getElementById('sentinelImportStatus').textContent='CSV import estimates de-meaned RMS acceleration, a rising zero-crossing frequency estimate and mean temperatures. Use a stable capture with one dominant periodic component; this is not a full FFT spectrum. Check sensor units before importing.';window.sentinelLastReport=null;renderSentinel(null);sentinelPersist();}
+function sentinelReport(){const result=sentinelCalc(true);if(!result)return;const payload={application:'SMART SHM · Asset Sentinel',reportType:'Baseline vs latest cross-signal screening',warning:'Screening aid only. User-defined thresholds are not universal alarm limits. This report is not a fault diagnosis or safety assessment.',...result};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='smart-shm-asset-sentinel-report.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+function parseSensorCapture(text){
+  const lines=text.replace(/^\uFEFF/,'').trim().split(/\r?\n/).filter(Boolean);if(lines.length<17)throw new Error('Use at least 16 samples so the vibration pattern can be estimated.');
+  const headers=lines[0].split(',').map(x=>x.trim().toLowerCase());
+  const find=(names)=>names.map(n=>headers.indexOf(n)).find(i=>i>=0);
+  const it=find(['time_s','time','timestamp_s']),ia=find(['accel_g','acceleration_g','accel']);
+  const is=find(['surface_temp_c','surface_temperature_c','surface_temp']),im=find(['ambient_temp_c','ambient_temperature_c','ambient_temp']);
+  if([it,ia,is,im].some(i=>i===undefined))throw new Error('Required headers: time_s, accel_g, surface_temp_c, ambient_temp_c.');
+  const rows=[];for(let i=1;i<lines.length;i++){const cols=lines[i].split(',');const row=[it,ia,is,im].map(j=>Number((cols[j]||'').trim()));if(row.every(Number.isFinite))rows.push({t:row[0],a:row[1],s:row[2],m:row[3]});}
+  if(rows.length<16)throw new Error('Fewer than 16 valid numeric samples were found.');
+  for(let i=1;i<rows.length;i++)if(!(rows[i].t>rows[i-1].t))throw new Error('time_s must increase strictly for every row.');
+  const mean=key=>rows.reduce((sum,r)=>sum+r[key],0)/rows.length;
+  const meanA=mean('a'),rms=Math.sqrt(rows.reduce((sum,r)=>sum+(r.a-meanA)**2,0)/rows.length);
+  const cross=[];for(let i=1;i<rows.length;i++){const a=rows[i-1].a-meanA,b=rows[i].a-meanA;if(a<=0&&b>0){const frac=(0-a)/(b-a);cross.push(rows[i-1].t+frac*(rows[i].t-rows[i-1].t));}}
+  const frequency=cross.length>=3?(cross.length-1)/(cross[cross.length-1]-cross[0]):null;
+  const surface=mean('s'),ambient=mean('m');
+  const intervals=rows.slice(1).map((r,i)=>r.t-rows[i].t).sort((a,b)=>a-b),dt=intervals[Math.floor(intervals.length/2)];
+  return {samples:rows.length,duration:rows[rows.length-1].t-rows[0].t,frequency,rms,surface,ambient,sampleRate:1/dt};
+}
+async function importSentinelCapture(which,file){
+  if(!file)return;const status=document.getElementById('sentinelImportStatus');
+  try{const capture=parseSensorCapture(await file.text());const pre=which==='baseline'?'Base':'Now';
+    if(capture.frequency!==null)document.getElementById('freq'+pre).value=capture.frequency.toFixed(3);
+    document.getElementById('rms'+pre).value=capture.rms.toFixed(5);document.getElementById('surf'+pre).value=capture.surface.toFixed(2);document.getElementById('amb'+pre).value=capture.ambient.toFixed(2);
+    status.textContent=`${which==='baseline'?'Baseline':'Latest'} capture imported: ${capture.samples} samples · ${fmt(capture.duration,3)} s · estimated sample rate ${fmt(capture.sampleRate,1)} Hz · ${capture.frequency===null?'frequency unavailable (enter it manually)': 'zero-crossing estimate '+fmt(capture.frequency,2)+' Hz'}. Verify units and signal quality.`;
+    sentinelSetMode('CSV IMPORT · CHECK DATA');sentinelPersist();
+    if(sentinelCalc(false))analyseSentinel();
+  }catch(err){alert('CSV import failed: '+err.message);status.textContent='Import failed. Check the CSV headers, numeric values and time column.';}
+  finally{document.getElementById(which==='baseline'?'sentinelBaseFile':'sentinelNowFile').value='';}
+}
+function sentinelDownloadExample(which){
+  const config=which==='baseline'?{freq:24,amp:.113,surface:42,ambient:25,name:'smart-shm-baseline-capture-example.csv'}:{freq:27.1,amp:.184,surface:57,ambient:27,name:'smart-shm-latest-capture-example.csv'};
+  const rows=[['time_s','accel_g','surface_temp_c','ambient_temp_c']];for(let i=0;i<300;i++){const t=i/500;const a=config.amp*Math.sin(2*Math.PI*config.freq*t)+.008*Math.sin(2*Math.PI*config.freq*3*t);rows.push([t.toFixed(4),a.toFixed(6),config.surface.toFixed(2),config.ambient.toFixed(2)]);}csvDownload(config.name,rows);
+}
+function loadSentinel(){try{const saved=JSON.parse(localStorage.getItem('smartshm-asset-sentinel-v1')||'null');if(saved&&typeof saved==='object')Object.entries(saved).forEach(([id,value])=>{const el=document.getElementById(id);if(el&&typeof value==='string')el.value=value;});}catch(e){} }
+function initSentinel(){loadSentinel();sentinelFieldIds.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>{sentinelSetMode('MANUAL · UPDATED');window.sentinelLastReport=null;renderSentinel(null);sentinelPersist();});if(el&&el.tagName==='SELECT')el.addEventListener('change',sentinelPersist);});document.getElementById('sentinelAnalyze').addEventListener('click',analyseSentinel);document.getElementById('sentinelReport').addEventListener('click',sentinelReport);document.getElementById('sentinelDemo').addEventListener('click',sentinelDemo);document.getElementById('sentinelClear').addEventListener('click',sentinelClear);document.getElementById('sentinelTemplateBase').addEventListener('click',()=>sentinelDownloadExample('baseline'));document.getElementById('sentinelTemplateNow').addEventListener('click',()=>sentinelDownloadExample('latest'));document.getElementById('sentinelBaseFile').addEventListener('change',e=>importSentinelCapture('baseline',e.target.files&&e.target.files[0]));document.getElementById('sentinelNowFile').addEventListener('change',e=>importSentinelCapture('latest',e.target.files&&e.target.files[0]));
+  const saved=sentinelValues();const populated=['freqBase','freqNow','rmsBase','rmsNow','surfBase','surfNow','ambBase','ambNow'].every(id=>saved[id]!==''&&Number.isFinite(Number(saved[id])));if(populated){sentinelSetMode('SAVED · LOCAL VALUES');const result=sentinelCalc(false);if(result){window.sentinelLastReport=result;renderSentinel(result);}}else{sentinelSetMode('NO DATA · READY');renderSentinel(null);}
+}
+
+function redrawAllVisuals(){
+  if(typeof mainCanvas!=='undefined'&&mainCanvas){draw3D(mainCanvas,model,model.theta,{trail:model.trail,ghosts:model.ghosts});draw3D(heroCanvas,heroCam,model.theta,{trail:true,ghosts:true});}
+  if(typeof drawPhysicsViz==='function')drawPhysicsViz();if(typeof drawChemViz==='function')drawChemViz();if(typeof drawMathViz==='function')drawMathViz();
+  if(document.getElementById('page-physics').classList.contains('active')&&document.getElementById('physicsResults').classList.contains('show'))drawPhysicsChart();
+  if(document.getElementById('page-chemistry').classList.contains('active')&&document.getElementById('chemResults').classList.contains('show'))drawChemChart();
+  if(document.getElementById('page-mathematics').classList.contains('active')&&document.getElementById('mathResults').classList.contains('show'))drawMathChart();
+}
+
+// ---------- Initialise ----------
+loadState();initUIPreferences();initSentinel();if(document.getElementById('mLength').value)document.getElementById('mVizLength').value=clamp(Number(document.getElementById('mLength').value)||50,20,150);renderPhysics();renderThermalRows();renderMath();renderHats();syncModel();drawPhysicsViz();drawChemViz();drawMathViz();saveState();
+</script>
+</body>
+</html>
